@@ -12,3 +12,4 @@ m = NetAddr("localhost", 7771); //Sender OSC POrt
 
 Pdef(\sine).stop;
 Pdef(\pulse).stop;
+Pdef(\snare).stop;

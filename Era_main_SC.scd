@@ -15,6 +15,8 @@ measureSelectNum = 0;
 
 ~freq_seq = Pxrand([108,115,108], inf);
 ~dur_seq = Pxrand([Pn(0.125, 6), Pseq([0.125, 0.25, 0.5, 0.125], 1),Pseq([0.125, 0.25, 0.25, 0.125], 1)], inf);
+~clickDur =	Prand([0.5,Pn(0.25,4)],inf);
+
 ~freq_seqStream = ~freq_seq.asStream;
 ~dur_seqStream = ~dur_seq.asStream;
 
@@ -59,55 +61,65 @@ Task({
 
 		if(measureSelectNum ==1 && countNum == 0, {
 
-					Pdef(\pulse).play(~tempoClock);
-					Pdef(\sine).play(~tempoClock);
+			Pdef(\pulse).play(~tempoClock);
+			Pdef(\sine).play(~tempoClock);
 		});
 
 		if(measureSelectNum ==3 && countNum == 0, {
 
-					Pdef(\sine).stop;
-					~dur_seq = Pseq([4],1);
-					~dur_seqStream = ~dur_seq.asStream;
-					Pdef(\sine, Pbind(
-						\instrument, \sin,
-						\freq, Pfunc({~freqData = ~freq_seqStream.next; }),
-						\dur, Pfunc({~durData = ~dur_seqStream.next; }),
-						\sustain, Pkey(\dur)/1.125,
-						\OSC_Sender, Pfunc({m.sendMsg("/event", ~freqData , ~durData);})
-					)).play(~tempoClock);
+			Pdef(\sine).stop;
+			~dur_seq = Pseq([4],1);
+			~dur_seqStream = ~dur_seq.asStream;
+			Pdef(\sine, Pbind(
+				\instrument, \sin,
+				\freq, Pfunc({~freqData = ~freq_seqStream.next; }),
+				\dur, Pfunc({~durData = ~dur_seqStream.next; }),
+				\sustain, Pkey(\dur)/1.125,
+				\OSC_Sender, Pfunc({m.sendMsg("/event", ~freqData , ~durData);})
+			)).play(~tempoClock);
 
-				}
+			}
 		);
 
 		if(measureSelectNum ==3 && countNum == 4, {
 
-					Pdef(\sine).stop;
-					~dur_seq = Pxrand([Pn(0.125, 6), Pseq([0.125, 0.25, 0.5, 0.125], 1),Pseq([0.125, 0.25, 0.25, 0.125], 1)], inf);
-					~dur_seqStream = ~dur_seq.asStream;
-					Pdef(\sine, Pbind(
-						\instrument, \sin,
-						\freq, Pfunc({~freqData = ~freq_seqStream.next; }),
-						\dur, Pfunc({~durData = ~dur_seqStream.next; }),
-						\sustain, Pkey(\dur)/1.5,
-						\OSC_Sender, Pfunc({m.sendMsg("/event", ~freqData , ~durData);})
-					)).play(~tempoClock);
+			Pdef(\sine).stop;
+			~dur_seq = Pxrand([Pn(0.125, 6), Pseq([0.125, 0.25, 0.5, 0.125], 1),Pseq([0.125, 0.25, 0.25, 0.125], 1)], inf);
+			~dur_seqStream = ~dur_seq.asStream;
+			Pdef(\sine, Pbind(
+				\instrument, \sin,
+				\freq, Pfunc({~freqData = ~freq_seqStream.next; }),
+				\dur, Pfunc({~durData = ~dur_seqStream.next; }),
+				\sustain, Pkey(\dur)/1.5,
+				\OSC_Sender, Pfunc({m.sendMsg("/event", ~freqData , ~durData);})
+			)).play(~tempoClock);
 
-				}
+			}
 		);
 
 
 		if(measureSelectNum ==4 && countNum == 0, {
 
-					Pdef(\sine).stop;
-					~dur_seq = Pxrand([Pn(0.125, 6), Pseq([0.125, 0.25, 0.5, 0.125], 1),Pseq([0.125, 0.25, 0.25, 0.125], 1)], inf);
-					~dur_seqStream = ~dur_seq.asStream;
-					Pdef(\sine, Pbind(
-						\instrument, \sin,
-						\freq, Pfunc({~freqData = ~freq_seqStream.next; }),
-						\dur, Pfunc({~durData = ~dur_seqStream.next; }),
-						\sustain, Pkey(\dur)/1.5,
-						\OSC_Sender, Pfunc({m.sendMsg("/event", ~freqData , ~durData);})
-					)).play(~tempoClock);
+			Pdef(\sine).stop;
+			~dur_seq = Pxrand([Pn(0.125, 6), Pseq([0.125, 0.25, 0.5, 0.125], 1),Pseq([0.125, 0.25, 0.25, 0.125], 1)], inf);
+			~dur_seqStream = ~dur_seq.asStream;
+			Pdef(\sine, Pbind(
+				\instrument, \sin,
+				\freq, Pfunc({~freqData = ~freq_seqStream.next; }),
+				\dur, Pfunc({~durData = ~dur_seqStream.next; }),
+				\sustain, Pkey(\dur)/1.5,
+				\OSC_Sender, Pfunc({m.sendMsg("/event", ~freqData , ~durData);})
+			)).play(~tempoClock);
+
+			Pdef(\snare,
+				Pbind(\instrument,\click,
+					\room,0.25,
+					\dur,~clickDur/2,
+					\gate,1,
+					\amp,Prand([0.5,0.25,0.125],inf)/2,
+					\sustain,Pkey(\dur)-(Pkey(\dur)/1.5)
+				).play(~tempoClock);
+			);
 		});
 
 
