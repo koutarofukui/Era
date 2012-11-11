@@ -1,6 +1,6 @@
 (
 //ProxySpace.push(s);
-countNum, measureSelectNum, desireMeasure;
+var countNum, measureSelectNum, desireMeasure;
 
 // init var
 measureSelectNum = 0;
@@ -19,10 +19,10 @@ desireMeasure = 0;
 ~dur_seqStream = ~dur_seq.asStream;
 
 
-//~sine_Sep_1 = ProxySpace.new;
-//~pulse_Sep_1 = ProxySpace.new;
-//~sine_Sep_1.fadeTime = 0;
-
+~sine_Sep_1 = ProxySpace.new;
+~pulse_Sep_1 = ProxySpace.new;
+~sine_Sep_1.fadeTime = 0;
+/*
 ~sine_Sep_1 = Pdef(\sine, Pbind(
 	\instrument, \sin,
 	\freq, Pfunc({~freqData = ~freq_seqStream.next; }),
@@ -38,6 +38,22 @@ desireMeasure = 0;
 	\sustain, Pkey(\dur)/1.5,
 	//\OSC_Sender, Pfunc({m.sendMsg("/event", ~freqData , ~durData);})
 ));
+*/
+~sine_Sep_1 = Pbind(
+	\instrument, \sin,
+	\freq, Pfunc({~freqData = ~freq_seqStream.next; }),
+	\dur, Pfunc({~durData = ~dur_seqStream.next; }),
+	\sustain, Pkey(\dur)/1.5,
+	\OSC_Sender, Pfunc({m.sendMsg("/event", ~freqData , ~durData);})
+);
+
+~pulse_Sep_1 = Pbind(
+	\instrument, \puls,
+	\freq, Pfunc({~freqData}),
+	\dur, Pfunc({~durData}),
+	\sustain, Pkey(\dur)/1.5,
+	//\OSC_Sender, Pfunc({m.sendMsg("/event", ~freqData , ~durData);})
+);
 
 Task({
 	inf.do({
@@ -60,13 +76,14 @@ Task({
 				{
 					~sine_Sep_1.stop;
 					~dur_seq = Pseq([4],1);
-					~sine_Sep_1 = Pdef(\sine, Pbind(
+					~dur_seqStream = ~dur_seq.asStream;
+					~sine_Sep_1 = Pbind(
 						\instrument, \sin,
 						\freq, Pfunc({~freqData = ~freq_seqStream.next; }),
 						\dur, Pfunc({~durData = ~dur_seqStream.next; }),
 						\sustain, Pkey(\dur)/1.5,
 						\OSC_Sender, Pfunc({m.sendMsg("/event", ~freqData , ~durData);})
-					));
+					);
 					~sine_Sep_1.play(~tempoClock);
 
 				}
