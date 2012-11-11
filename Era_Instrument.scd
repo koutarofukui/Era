@@ -16,7 +16,7 @@ SynthDef(\puls, {
 	var osc, env;
 	osc = Pulse.ar(freq, 0.01, 1);
 	osc = osc + AllpassN.ar(osc, 0.5, 0.02, 1, 1, 0);
-	osc = RLPF.ar(osc, 300, 0.25, 1, 0);
+	osc = RLPF.ar(osc, 300, 0.125, 1, 0);
 	env = EnvGen.kr(Env.adsr(atk, decay, sus, rel, 1, -4), gate, doneAction:2);
 	osc = osc * env;
 	osc = Pan2.ar(osc, 0, amp);
