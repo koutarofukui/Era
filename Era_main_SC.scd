@@ -1,13 +1,13 @@
 (
-//p = ProxySpace.push(s);
+//ProxySpace.push(s);
+countNum, measureSelectNum, desireMeasure;
 
-var countNum, measureSelectNum, desireMeasure;
 // init var
 measureSelectNum = 0;
 desireMeasure = 0;
 
 //loading files
-~currentDocPath="/Users/koutarofukui/Dropbox/Application/SC related files/Piece/Era/";
+~currentDocPath = "/Users/koutarofukui/Dropbox/Application/SC related files/Piece/Era/";
 (~currentDocPath++"Era_Instrument.scd").load;
 (~currentDocPath++"Era_Setting.scd").load;
 
@@ -17,6 +17,11 @@ desireMeasure = 0;
 ~dur_seq = Pxrand([Pn(0.125, 6), Pseq([0.125, 0.25, 0.5, 0.125], 1),Pseq([0.125, 0.25, 0.25, 0.125], 1)], inf);
 ~freq_seqStream = ~freq_seq.asStream;
 ~dur_seqStream = ~dur_seq.asStream;
+
+
+//~sine_Sep_1 = ProxySpace.new;
+//~pulse_Sep_1 = ProxySpace.new;
+//~sine_Sep_1.fadeTime = 0;
 
 ~sine_Sep_1 = Pdef(\sine, Pbind(
 	\instrument, \sin,
@@ -37,9 +42,9 @@ desireMeasure = 0;
 Task({
 	inf.do({
 	|i|
-		measureSelectNum = i;
+		//measureSelectNum = i;
 		countNum = i % 16; // time measure
-		//countNum.postln;
+
 		("count : "++ countNum).postln;
 
 		if(countNum ==0, {
@@ -47,6 +52,23 @@ Task({
 				{
 					~sine_Sep_1.play(~tempoClock);
 					~pulse_Sep_1.play(~tempoClock);
+				}
+			);
+		});
+		if(countNum ==0, {
+			if(measureSelectNum == 2,
+				{
+					~sine_Sep_1.stop;
+					~dur_seq = Pseq([4],1);
+					~sine_Sep_1 = Pdef(\sine, Pbind(
+						\instrument, \sin,
+						\freq, Pfunc({~freqData = ~freq_seqStream.next; }),
+						\dur, Pfunc({~durData = ~dur_seqStream.next; }),
+						\sustain, Pkey(\dur)/1.5,
+						\OSC_Sender, Pfunc({m.sendMsg("/event", ~freqData , ~durData);})
+					));
+					~sine_Sep_1.play(~tempoClock);
+
 				}
 			);
 		});

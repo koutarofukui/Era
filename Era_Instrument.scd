@@ -3,7 +3,7 @@ SynthDef(\sin, {
 
 var osc, env, out = 0;
 
-	osc = SinOsc.ar(freq.midicps, 0, amp/4);
+	osc = SinOsc.ar(freq.midicps, 0, amp);
 	env = EnvGen.kr(Env.adsr(0.0,0 ,1,0.0),gate,  doneAction:2);
 	osc = osc * env;
 	osc = Pan2.ar(osc);
