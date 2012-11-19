@@ -13,17 +13,10 @@ measureSelectNum = 0;
 
 ~tempoClock = TempoClock(70/60);
 
-~freq_seq = Pxrand([108,115,108], inf);
-~dur_seq = Pxrand([Pn(0.125, 6), Pseq([0.125, 0.25, 0.5, 0.125], 1),Pseq([0.125, 0.25, 0.25, 0.125], 1)], inf);
-~clickDur =	Prand([0.5,Pn(0.25,4)],inf);
+~freq_seqStream = Pxrand([108,115,108], inf).asStream;
+~dur_seqStream = Pxrand([Pn(0.125, 6), Pseq([0.125, 0.25, 0.5, 0.125], 1),Pseq([0.125, 0.25, 0.25, 0.125], 1)], inf).asStream;
+~clickDur_~dur_seqStream =	Prand([0.5,Pn(0.25,4)],inf);
 
-~freq_seqStream = ~freq_seq.asStream;
-~dur_seqStream = ~dur_seq.asStream;
-
-
-//~sine_Sep_1 = ProxySpace.new;
-//~pulse_Sep_1 = ProxySpace.new;
-//~sine_Sep_1.fadeTime = 0;
 
 Pdef(\sine, Pbind(
 	\instrument, \sin,
