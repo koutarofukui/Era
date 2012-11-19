@@ -1,9 +1,23 @@
 SynthDef(\sin, {
 	|freq, amp = 0.125, gate = 1|
 
-var osc, env, out = 0;
+	var osc, env, out = 0;
 
 	osc = SinOsc.ar(freq.midicps, 0, amp);
+	env = EnvGen.kr(Env.adsr(0.0,0 ,1,0.0),gate,  doneAction:2);
+	osc = osc * env;
+	osc = Pan2.ar(osc);
+	out = Out.ar(0, osc);
+
+}).store;
+
+SynthDef(\HenonC, {
+	|freq, amp = 0.125, gate = 1|
+
+	var osc, env, out = 0;
+
+	osc = SinOsc.ar(freq.midicps, 0, amp);
+	osc = osc * HenonC.ar(20, 1.4,0.3, 0, 0, 1);
 	env = EnvGen.kr(Env.adsr(0.0,0 ,1,0.0),gate,  doneAction:2);
 	osc = osc * env;
 	osc = Pan2.ar(osc);

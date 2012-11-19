@@ -13,10 +13,16 @@ measureSelectNum = 0;
 
 ~tempoClock = TempoClock(70/60);
 
+//sine pattern set
 ~sine_freqSeqStream = Pxrand([108,115,108], inf).asStream;
 ~sine_durSeqStream = Pxrand([Pn(0.125, 6), Pseq([0.125, 0.25, 0.5, 0.125], 1),Pseq([0.125, 0.25, 0.25, 0.125], 1)], inf).asStream;
-~click_durSeqStream =	Prand([0.5,Pn(0.25,4)],inf);
 
+//click pattern set
+~click_durSeqStream = Prand([0.5,Pn(0.25,4)],inf).asStream;
+
+//HenonC AM mod Sine pattern set
+~henonC_freqSeqStream = Prand([0.5,Pn(0.25,4)],inf).asStream;
+~henonC_durSeqStream = Prand([0.5,Pn(0.25,4)],inf).asStream;
 
 Pdef(\sine, Pbind(
 	\instrument, \sin,
