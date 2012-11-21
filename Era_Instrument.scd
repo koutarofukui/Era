@@ -11,17 +11,18 @@ SynthDef(\sin, {
 
 }).store;
 
-SynthDef(\HenonC, {
+SynthDef(\henonC, {
 	|freq, amp = 0.125, gate = 1|
 
-	var osc, env, out = 0;
-
+	var osc, env, mod, out = 0;
 	osc = SinOsc.ar(freq.midicps, 0, amp);
-	osc = osc * HenonC.ar(20, 1.4,0.3, 0, 0, 1);
-	env = EnvGen.kr(Env.adsr(0.0,0 ,1,0.0),gate,  doneAction:2);
+	mod = HenonC.ar(SampleRate.ir/8, LFNoise2.kr(0.125/64, 0.5, 1.8),LFNoise2.kr(0.25, 0.5, 0.5), 0.333, 1) ;
+	osc = osc * mod;
+	osc = Limiter.ar(osc, 0.5, 0.001);
+	env = EnvGen.kr(Env.adsr(0.0,0,1,0.0),gate,  doneAction:2);
 	osc = osc * env;
 	osc = Pan2.ar(osc);
-	out = Out.ar(0, osc);
+	out = Out.ar(out, osc);
 
 }).store;
 
@@ -64,37 +65,6 @@ SynthDef(\sine, {|atk= 0.01, rel= 0.0125, amp= 1|
 }).store;
 
 
-SynthDef(\grainSin, {arg midiPitch = 48,pulseSpeed = 24,  freqMod = 0, amp = 0.005, envbuf;
-	var pan, env, freqdev, grainSource;
-
-	pan = WhiteNoise.kr(1);
-	freqdev = WhiteNoise.kr(freqMod);
-	~envbuf = z;
-	env = EnvGen.kr(
-		Env.perc( 0, 0.5, 0.5, -1, \welch ),
-		levelScale: amp,
-		doneAction: 2);
-	grainSource = GrainSin.ar(2, Impulse.kr(pulseSpeed), 0.1, midiPitch.midicps + freqdev, pan, envbuf);
-	Out.ar(0,
-		grainSource * amp)
-	}).store;
-
-SynthDef(\grainSin_2, {arg midiPitch = 48,pulseSpeed = 24, gate = 1, freqMod = 0, amp = 0.005, envbuf;
-	var pan, env, freqdev, grainSource;
-
-	pan = WhiteNoise.kr(1);
-	freqdev = WhiteNoise.kr(freqMod);
-	envbuf = z;
-	env = EnvGen.kr(
-		Env.adsr( 0, 0, 1,0, -4),
-		gate,
-		levelScale: amp,
-		doneAction: 2);
-	grainSource = GrainSin.ar(2, Impulse.kr(pulseSpeed), 0.1, midiPitch.midicps + freqdev, pan, ~envbuf);
-	grainSource = RHPF.ar(grainSource, midiPitch.midicps, 0.75, 1, 0);
-	Out.ar(0,
-		grainSource * amp)
-	}).store;
 
 
 SynthDef(\amSine, {|freq = 36, atk= 0, rel= 0, gate = 1, amp= 1, modRate = 0, modDepth = 0|
