@@ -26,6 +26,18 @@ SynthDef(\henonC, {
 
 }).store;
 
+SynthDef(\allpassPulse, {
+	|out = 0, freq, gate = 1, atk = 0.0001, decay= 0, sus = 0, rel = 0.00001 , amp = 1|
+	var osc, env;
+	osc = Pulse.ar(freq, 0.01, 1);
+	osc = osc + AllpassN.ar(osc, 0.5, 0.02, 1, 1, 0);
+	osc = RHPF.ar(osc, 10000, 1, 1, 0);
+	env = EnvGen.ar(Env.adsr(atk, decay, sus, rel, 1, -4));
+	osc = osc * env;
+	osc = Pan2.ar(osc, 0, amp);
+	Out.ar(0, osc);
+	}).store;
+
 SynthDef(\puls, {
 	|out = 0, freq, gate = 1, atk = 0, decay= 0.25, sus = 0, rel = 0.00001 , amp = 1|
 	var osc, env;
@@ -39,9 +51,9 @@ SynthDef(\puls, {
 	}).store;
 
 
-SynthDef(\kick, {|atk= 0.01, rel= 0.03125, amp= 1, pan = 0|
+SynthDef(\kick, {|atk= 0, rel= 0.03125, amp= 1, pan = 0|
 	var e= EnvGen.ar(Env.perc(atk, rel), doneAction:2);
-	var z= SinOsc.ar(e * 50 +20, 0, amp);
+	var z= SinOsc.ar(e * 150 +20, 0, amp).clip(0.95);
 	z = Pan2.ar(z, pan, 1.5).distort;
 	Out.ar(0, z*e);
 }).store;
@@ -63,9 +75,6 @@ SynthDef(\sine, {|atk= 0.01, rel= 0.0125, amp= 1|
 
 	Out.ar(0, z);
 }).store;
-
-
-
 
 SynthDef(\amSine, {|freq = 36, atk= 0, rel= 0, gate = 1, amp= 1, modRate = 0, modDepth = 0|
 	var e= EnvGen.ar(Env.adsr(atk,0, 1, rel), gate, doneAction:2);

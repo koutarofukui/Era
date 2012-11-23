@@ -9,7 +9,7 @@ Server.internal.options.sampleRate = 96000;
 m = NetAddr("localhost", 7771); //Sender OSC POrt
 
 //stop pattern
-
+Pdef(\kick).stop;
 Pdef(\sine).stop;
 Pdef(\pulse).stop;
 Pdef(\snare).stop;
