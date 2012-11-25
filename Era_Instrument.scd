@@ -11,18 +11,31 @@ SynthDef(\sin, {
 
 }).store;
 
+SynthDef(\logisticMap, {
+	|out = 0, amp =1, gate=1, atk=0 ,decay=0, sus=1, rel=0, width=0.25, chaos=3, freq, logiFreq = 100, init = 0.125|
+	var osc, mod, env;
+	mod = Logistic.kr(chaos, logiFreq, init, 1);
+	osc = Pulse.ar(freq, width);
+	osc = RLPF.ar(osc, mod * 5000, 0.75);
+	env = EnvGen.kr(Env.adsr(atk, decay, sus, rel), gate, doneAction:2);
+	osc = osc * env * amp;
+	osc = Pan2.ar(osc);
+	Out.ar(out, osc);
+}).store;
+
 SynthDef(\henonC, {
-	|freq, amp = 0.125, gate = 1|
+	|freq, amp = 0.125, gate = 1, param_a = 0.5, param_b = 0.5|
 
 	var osc, env, mod, out = 0;
 	osc = SinOsc.ar(freq.midicps, 0, amp);
-	mod = HenonC.ar(SampleRate.ir/8, LFNoise2.kr(0.125/64, 0.5, 1.8),LFNoise2.kr(0.25, 0.5, 0.5), 0.333, 1) ;
+	//mod = HenonC.ar(SampleRate.ir, LFNoise2.kr(0.125/64, 0.5, 1.8),LFNoise2.kr(0.25, 0.5, 0.5), 0.333, 1) ;
+	mod = HenonC.ar(SampleRate.ir/8, param_a, param_b, 0.5, 0.5) ;
 	osc = osc * mod;
 	osc = Limiter.ar(osc, 0.5, 0.001);
 	env = EnvGen.kr(Env.adsr(0.0,0,1,0.0),gate,  doneAction:2);
 	osc = osc * env;
 	osc = Pan2.ar(osc);
-	out = Out.ar(out, osc);
+	Out.ar(out, osc);
 
 }).store;
 
@@ -53,7 +66,7 @@ SynthDef(\puls, {
 
 SynthDef(\kick, {|atk= 0, rel= 0.03125, amp= 1, pan = 0|
 	var e= EnvGen.ar(Env.perc(atk, rel), doneAction:2);
-	var z= SinOsc.ar(e * 150 +20, 0, amp).clip(0.95);
+	var z= SinOsc.ar(e * 150 +50, 0, amp).clip(0.95);
 	z = Pan2.ar(z, pan, 1.5).distort;
 	Out.ar(0, z*e);
 }).store;

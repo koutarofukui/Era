@@ -1,5 +1,5 @@
 //Server setting
-//s.latency;
+s.latency = 0.0001;
 //Interface Setting
 Server.internal.options.device =  "Fireface UFX (23208981)";
 Server.internal.options.sampleRate = 96000;
@@ -14,3 +14,4 @@ Pdef(\sine).stop;
 Pdef(\pulse).stop;
 Pdef(\snare).stop;
 Pdef(\henonC).stop;
+Pdef(\logisticMapBass).stop;
