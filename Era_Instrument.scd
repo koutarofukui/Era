@@ -1,12 +1,12 @@
 SynthDef(\sin, {
-	|freq, amp = 0.125, gate = 1|
+	|freq, amp = 0.125, gate = 1, panPos = 0|
 
 	var osc, env, out = 0;
 
 	osc = SinOsc.ar(freq.midicps, 0, amp);
 	env = EnvGen.kr(Env.adsr(0.0,0 ,1,0.0),gate,  doneAction:2);
 	osc = osc * env;
-	osc = Pan2.ar(osc);
+	osc = Pan2.ar(osc, panPos);
 	out = Out.ar(0, osc);
 
 }).store;
@@ -77,6 +77,11 @@ SynthDef(\click, {|rel= 0.5, mix= 0.5, room= 0.25, amp= 1, damp= 0.9, pan= 0|
 	z = Pan2.ar(z, LFNoise2.kr(64), amp );
 	Out.ar(0, z);
 }).store;
+
+
+
+
+
 
 SynthDef(\sine, {|atk= 0.01, rel= 0.0125, amp= 1|
 	var e= EnvGen.ar(Env.perc(atk, rel), doneAction:2);
