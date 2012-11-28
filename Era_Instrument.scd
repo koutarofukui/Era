@@ -1,13 +1,13 @@
 SynthDef(\sin, {
-	|freq, amp = 0.125, gate = 1, panPos = 0|
+	|out = 0, freq, amp = 0.125, gate = 1, panPos = 0|
 
-	var osc, env, out = 0;
+	var osc, env;
 
 	osc = SinOsc.ar(freq.midicps, 0, amp);
 	env = EnvGen.kr(Env.adsr(0.0,0 ,1,0.0),gate,  doneAction:2);
 	osc = osc * env;
 	osc = Pan2.ar(osc, panPos);
-	out = Out.ar(0, osc);
+	out = Out.ar(out, osc);
 
 }).store;
 
@@ -63,10 +63,9 @@ SynthDef(\puls, {
 	Out.ar(out, osc);
 	}).store;
 
-
 SynthDef(\kick, {|atk= 0, rel= 0.03125, amp= 1, pan = 0|
 	var e= EnvGen.ar(Env.perc(atk, rel), doneAction:2);
-	var z= SinOsc.ar(e * 150 +50, 0, amp).clip(0.95);
+	var z= SinOsc.ar(e * 100 +50, 0, amp).clip(0.95);
 	z = Pan2.ar(z, pan, 1.5).distort;
 	Out.ar(0, z*e);
 }).store;
@@ -78,10 +77,13 @@ SynthDef(\click, {|rel= 0.5, mix= 0.5, room= 0.25, amp= 1, damp= 0.9, pan= 0|
 	Out.ar(0, z);
 }).store;
 
-
-
-
-
+SynthDef(\click_2, {|rel= 0.5, mix= 0.5, room= 0.25, amp= 1, damp= 0.9, pan= 0|
+	var e= Line.kr(0, 1, rel, doneAction:2);
+	var z= Impulse.ar(0)+BrownNoise.ar(1)*Line.ar(1, 0, room*0.01);
+	z = RHPF.ar(z, 15000, 0.25);
+	z = Pan2.ar(z, LFNoise2.kr(64), amp );
+	Out.ar(0, z);
+}).store;
 
 SynthDef(\sine, {|atk= 0.01, rel= 0.0125, amp= 1|
 	var e= EnvGen.ar(Env.perc(atk, rel), doneAction:2);
@@ -122,11 +124,22 @@ SynthDef(\grayNoise, {|atk= 0, rel= 0.125, gate = 1, amp= 1|
 }).store;
 
 
-SynthDef(\sinePulse, {| midiPitch = 96, gate = 1, atk = 0, decay = 0, sus = 1, rel = 0, amp= 1, pan = 0 |
+SynthDef(\sinePulse, {| freq = 96, gate = 1, atk = 0, decay = 0, sus = 1, rel = 0, amp= 1, pan = 0 |
 	var e= EnvGen.ar(Env.adsr(atk, decay, sus, rel, curve: -2), gate, doneAction: 2);
-	var z= SinOsc.ar(midiPitch.midicps + rrand(0.01, 0.1), 0, 1, 0);
+	var z= SinOsc.ar(freq.midicps + rrand(0.01, 0.1), 0, 1, 0);
 	z = Pan2.ar(z*e, pan, amp/4);
 	4.do({ a = AllpassL.ar(z, 0.2, LFNoise2.kr([rrand(0.01, 0.1),rrand(0.01, 0.1)],0.05,0.15)/2, 0.25) });
 
 	Out.ar(0, z );
+}).store;
+
+///////////   FX  /////////////////
+
+SynthDef(\reverb, {
+	|in, out = 0, mix = 0.5, room = 0.5, dump = 0.5 |
+	var input, fx, output;
+	input = In.ar(in, 2);
+	fx = FreeVerb.ar(input, mix, room, dump, 1);
+	Pan2.ar(fx,0);
+	output = Out.ar(out, fx);
 }).store;

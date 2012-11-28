@@ -17,3 +17,4 @@ Pdef(\henonC).stop;
 Pdef(\logisticMapBass).stop;
 Pdef(\sineBass).stop;
 Pdef(\sine_2).stop;
+Pdef(\snare_2).stop;
