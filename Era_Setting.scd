@@ -1,5 +1,5 @@
 //Server setting
-s.latency = 0.0001;
+s.latency = 0.03;
 //Interface Setting
 Server.internal.options.device =  "Fireface UFX (23208981)";
 Server.internal.options.sampleRate = 96000;
@@ -18,3 +18,20 @@ Pdef(\logisticMapBass).stop;
 Pdef(\sineBass).stop;
 Pdef(\sine_2).stop;
 Pdef(\snare_2).stop;
+Pdef(\logisticMap_Synth).stop;
+Pdef(\grayNoise).stop;
+Pdef(\whiteNoise).stop;
+
+
+Pdef(\beat).stop;
+Pdef(\snare).stop;
+Pdef(\grain).stop;
+Pdef(\grain_2).stop;
+Pdef(\sineHit).stop;
+Pdef(\amSine).stop;
+Pdef(\grayNoise).stop;
+Pdef(\whiteNoise).stop;
+Pdef(\sinePulse_L).stop;
+Pdef(\sinePulse_R).stop;
+Pdef(\amSineBass).stop;
+Pdef(\chord).stop;
