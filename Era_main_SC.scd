@@ -1,12 +1,17 @@
 (//Set up
 ~currentDocPath = "/Users/koutarofukui/Dropbox/Application/SC related files/Piece/Era/";
+
+)
+(
+~currentDocPath = thisProcess.nowExecutingPath.replace("Era_main_SC.scd", "");
+(~currentDocPath++"Era_Instrument.scd").load;
 (~currentDocPath++"Era_Instrument.scd").load;
 (~currentDocPath++"Era_Setting.scd").load;
 )
-
 (
 
 //ProxySpace.push(s);
+
 var countNum, measureSelectNum, reverb, logisticFilterFx;
 var set_1,set_2,set_3, set_4, set_5, set_6 ,set_7,set_8, set_9, set_10;
 set_1 = 0.125;
@@ -21,7 +26,7 @@ measureSelectNum = 0;
 
 //loading files
 
-~currentDocPath = "/Users/koutarofukui/Dropbox/Application/SC related files/Piece/Era/";
+~currentDocPath = thisProcess.nowExecutingPath.replace("Era_main_SC.scd", "");
 (~currentDocPath++"Era_Instrument.scd").load;
 (~currentDocPath++"Era_Setting.scd").load;
 
@@ -209,7 +214,7 @@ Task({
 					}),
 					\amp,Pfunc({if(~sine_durData >= 0.5, 0, 1)}),
 					//\dur,Pfunc({~kick_durData = ~kick_freqSeqStream.next}),
-					\OSC_Sender, Pfunc({m.sendMsg("/event/kick", ~kick_durData);})
+					\OSC_Sender, Pfunc({m.sendMsg("/event/kick", ~kick_durData = ~sine_durData);})
 				)
 			).play(~tempoClock);
 		});
@@ -257,7 +262,7 @@ Task({
 						~sine_durData;
 					}),
 					\amp,Pfunc({if(~sine_durData >= 0.5, 0, 1)}),
-					\OSC_Sender, Pfunc({m.sendMsg("/event/kick", ~kick_durData);})
+					\OSC_Sender, Pfunc({m.sendMsg("/event/kick", ~kick_durData = ~sine_durData );})
 				)
 			).play(~tempoClock);
 
@@ -387,7 +392,7 @@ Task({
 					\amp,Pfunc({
 						if(~sine_durData >= 0.5, 0, 1);
 					}),
-					\OSC_Sender, Pfunc({m.sendMsg("/event/kick", ~kick_durData);})
+					\OSC_Sender, Pfunc({m.sendMsg("/event/kick", ~kick_durData = ~sine_durData);})
 				)
 			).play(~tempoClock);
 
