@@ -446,11 +446,13 @@ Task({
 			Pdef(\snare).stop;
 			Pdef(\logisticMap_Synth,
 				Pbind(\instrument, \logisticMap_Synth,
-					\chaos,3.9,
+					\chaos,Pn(Penv([3.5, 3.95], [8], -2)),
+					\atk, 0.01,
+					\rel, 0.01,
 					\logiFreq, 500,
-					\dur, 8,
-					\sustain, 8,
-					\amp, 0.125
+					\dur, 1/16,
+					\sustain, 1/16,
+					\amp, Pn(Penv([0.125, 0.25], [8], -2)),
 				)
 			).play(~tempoClock);
 			~sine_durSeqStream = Pseq([8],1).asStream;
