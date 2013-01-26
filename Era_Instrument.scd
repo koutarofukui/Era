@@ -1,3 +1,39 @@
+SynthDef(\pulseSegment,
+	{|out = 0, freq, atk = 0, rel = 0.125, amp = 1, sampleRate = 0.25, bitRate = 0, pan = 0|
+		var osc, ampEnv, pitchEnv;
+		ampEnv = EnvGen.kr(Env.perc(atk, rel, amp, -8), doneAction:2);
+		//osc = MantissaMask.ar(SinOsc.ar(freq, 0, amp), bitRate);
+		osc = SinOsc.ar(freq, 0, amp).distort();
+		//osc = Latch.ar(osc, Impulse.ar(linlin(sampleRate, 0, 1, 0, SampleRate.ir)));
+		osc = Pan2.ar(osc, pan);
+		Out.ar(out, osc * ampEnv);
+	}
+).store;
+
+SynthDef(\noise,
+	{|out = 0, gate = 1, freq, atk = 0, decay=0,sus = 1, rel = 0.125, amp = 1, sampleRate = 0.5, bitRate = 0, pan = 0|
+		var osc, ampEnv;
+		ampEnv = EnvGen.kr(Env.adsr(atk, decay, sus, rel, amp, -4), gate, doneAction:2);
+		//osc = MantissaMask.ar(SinOsc.ar(freq, 0, amp), bitRate);
+		osc = WhiteNoise.ar(amp);
+		osc = Latch.ar(osc, Impulse.ar(LinLin.kr(sampleRate, 0, 1, 0, SampleRate.ir)));
+		osc = Pan2.ar(osc, 0);
+		Out.ar(out, osc * ampEnv);
+	}
+).store;
+
+SynthDef(\sineBass,
+	{|out = 0, gate = 1, freq, atk = 0, decay=0,sus = 1, rel = 0.125, amp = 1, sampleRate = 0.5, bitRate = 0, pan = 0|
+		var osc, ampEnv;
+		ampEnv = EnvGen.kr(Env.adsr(atk, decay, sus, rel, amp, -4), gate, doneAction:2);
+		//osc = MantissaMask.ar(SinOsc.ar(freq, 0, amp), bitRate);
+		osc = SinOsc.ar(freq, 0, amp);
+		osc = Latch.ar(osc, Impulse.ar(LinLin.kr(sampleRate, 0, 1, 0, SampleRate.ir)));
+		osc = Pan2.ar(osc, 0);
+		Out.ar(out, osc * ampEnv);
+	}
+).store;
+///////////////////////////////////////////////////////////////////////////////////////
 SynthDef(\sin, {
 	|out = 0, freq, amp = 0.125, gate = 1, panPos = 0,atk = 0.0001, rel = 0.025|
 

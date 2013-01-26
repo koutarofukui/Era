@@ -30,6 +30,7 @@ measureSelectNum = 0;
 (~currentDocPath++"Era_Instrument.scd").load;
 (~currentDocPath++"Era_Setting.scd").load;
 
+//~tempoClock = TempoClock(180/60);
 ~tempoClock = TempoClock(90/60);
 
 //sine pattern set
@@ -45,9 +46,6 @@ measureSelectNum = 0;
 //HenonC AM mod Sine pattern set
 ~henonC_freqSeqStream = Prand([0.5,Pn(0.25,4)],inf).asStream;
 ~henonC_durSeqStream = Prand([0.5,Pn(0.25,4)],inf).asStream;
-
-
-
 
 //FX setting
 ~logisticFilterFx.free;
@@ -72,8 +70,8 @@ Task({
 		//Print"count"&"measure"
 		if(countNum == 0,
 			{
-				("measure : "++ measureSelectNum).postln;
 				measureSelectNum = measureSelectNum  + 1;
+				("measure : "++ measureSelectNum).postln;
 
 			}
 		);
@@ -82,8 +80,328 @@ Task({
 
 		("count : "++ countNum).postln;
 
-		if(measureSelectNum ==1 && countNum == 0, {
-			//Pdef(\pulse).play(~tempoClock);
+		if(measureSelectNum == 1 && countNum == 0, {
+
+			Pdef(\pulseSegment_inst,
+				Pbind(
+					\instrument, \pulseSegment,
+					\freq, 440 * 4,
+					\rel, 1/128,
+					\amp, 1,
+					\dur, 1/3/2,
+				)
+			).play(~tempoClock);
+
+		});
+
+		if(measureSelectNum == 1 && countNum == 1, {
+
+			Pdef(\pulseSegment_inst,
+				Pbind(
+					\instrument, \pulseSegment,
+					\freq, 440 * 24,
+					\rel, 1/32,
+					\sampleRate,0.6,
+					\amp, 1,
+					\dur, 1/16,
+				)
+			).play(~tempoClock);
+
+		});
+
+		if(measureSelectNum == 1 && countNum == 4, {
+
+			Pdef(\pulseSegment_inst,
+				Pbind(
+					\instrument, \pulseSegment,
+					\freq, 440 * 32,
+					\rel, 1/32,
+					\sampleRate,0,
+					\amp, 1,
+					\dur, 1/4,
+				)
+			).play(~tempoClock);
+
+		});
+		if(measureSelectNum == 1 && countNum == 6, {
+
+			Pdef(\pulseSegment_inst,
+				Pbind(
+					\instrument, \pulseSegment,
+					\freq, 440 * 0.5,
+					\rel, 1/32,
+					\amp, 0.5,
+					\dur, Pn(Penv([1/4, 1/24], [2]))
+				)
+			).play(~tempoClock);
+
+		});
+
+		if(measureSelectNum == 2 && countNum == 0, {
+
+			Pdef(\pulseSegment_inst,
+				Pbind(
+					\instrument, \pulseSegment,
+					\freq, 440 * 8,
+					\rel, 1/128,
+					\sampleRate, Prand([0.125,0.25, 0.5], inf)/128,
+					\amp, 1,
+					\dur, 1/8/2,
+
+				)
+			).play(~tempoClock);
+
+		});
+		if(measureSelectNum == 2 && countNum == 4, {
+
+			Pdef(\pulseSegment_inst,
+				Pbind(
+					\instrument, \pulseSegment,
+					\freq, 440 * 32,
+					\atk, Pn(Penv([1/128, 1/64], [4])),
+					\rel, Pn(Penv([0, 1/64], [4])),
+					\sampleRate, 0.02,
+					\amp, 0.75,
+					\dur, Pn(Penv([1/8, 1/2], [4])),
+
+				)
+			).play(~tempoClock);
+
+		});
+
+		if(measureSelectNum == 3 && countNum == 0, {
+
+			Pdef(\pulseSegment_inst,
+				Pbind(
+					\instrument, \pulseSegment,
+					\freq, 440 /4,
+					\atk, 0,
+					//\rel, Pn(Penv([1/16, 1/64], [4])),
+					\rel, Pn(Penv([1/16, 1/256], [4], -4)),
+					\amp, Pseq([Pn(0.75, 7), 0.25, 0.75],1),
+					\dur, Pseq([1/2, Pn(1/4, 2), Pn(1/3, 6)],1)/2,
+
+				)
+			).play(~tempoClock);
+
+		});
+		if(measureSelectNum == 3 && countNum == 2, {
+
+			Pdef(\sineBass_inst,
+				Pbind(
+					\instrument, \sineBass,
+					\freq, Pseq([440*32,440*12],inf),
+					\atk, 0,
+					//\rel, Pn(Penv([1/16, 1/64], [4])),
+					\rel, 0,
+					\amp, 0.25,
+					\dur, 1/16,
+
+				)
+			).play(~tempoClock);
+
+		});
+
+		if(measureSelectNum == 3 && countNum == 4, {
+			Pdef(\sineBass_inst).stop;
+			Pdef(\pulseSegment_inst,
+				Pbind(
+					\instrument, \pulseSegment,
+					\freq, Pn(Penv([440*16, 440*32, 440*32],[4, 6],2)),
+					\atk, 0,
+					\rel, 1/128,
+					\amp, 0.75,
+					\dur, 1/6,
+
+				)
+			).play(~tempoClock);
+
+		});
+		if(measureSelectNum == 4 && countNum == 6, {
+
+			Pdef(\pulseSegment_inst,
+				Pbind(
+					\instrument, \pulseSegment,
+					\freq, Pseq([Pn(440* 2, 6),440*0.25],1),
+					\atk, 0,
+					\rel, Pseq([Pn(1/256, 8),1/8],1),
+					\amp, 0.75,
+					\dur, Pseq([1, Pn(1/4, 6)].reverse,1)/2,
+
+				)
+			).play(~tempoClock);
+
+		});
+		if(measureSelectNum == 4 && countNum == 7, {
+
+			Pdef(\sineBass_inst,
+				Pbind(
+					\instrument, \sineBass,
+					\freq, Pseq([440*32,440*24],inf),
+					\atk, 0,
+					//\rel, Pn(Penv([1/16, 1/64], [4])),
+					\rel, 0,
+					\amp, 0.25,
+					\dur, 1/16,
+
+				)
+			).play(~tempoClock);
+
+		});
+		if(measureSelectNum == 5 && countNum == 0, {
+			Pdef(\sineBass_inst).stop;
+			Pdef(\noise_inst,
+				Pbind(
+					\instrument, \noise,
+					//\sampleRate, Pn(Penv([0.01, 0.04, 0.04], [2, 2], 0)),
+					\atk, 0,
+					\rel, 0,
+					\amp, 0.5,
+					\dur, Pn(1/8,8*4),
+					\sustain, Pkey(\dur)
+
+				)
+			).play(~tempoClock);
+
+		});
+		if(measureSelectNum == 5 && countNum == 4, {
+
+			Pdef(\noise_inst,
+				Pbind(
+					\instrument, \noise,
+					\sampleRate, 0.002,
+					\atk, 1/128,
+					\rel, 0,
+					\amp, Pn(Penv([0.25, 0.25], [4], -2)),
+					\dur, Pseq([Pn(1/2, 3), Pn(1/8,12)], 1)/2,
+					\sustain, Pkey(\dur)/4
+				)
+			).play(~tempoClock);
+
+			Pdef(\pulseSegment_inst,
+				Pbind(
+					\instrument, \pulseSegment,
+					\freq, Pseq([Pn(440/2, 3), Pn(440*8, 12)],1),
+					\atk, 0,
+					\rel, 1/128,
+					\amp, 0.75,
+					\dur, Pseq([Pn(1/2, 3), Pn(1/8,12)], 1)/2
+				)
+			).play(~tempoClock);
+
+		});
+		if(measureSelectNum == 5 && countNum == 6, {
+
+			Pdef(\noise_inst,
+				Pbind(
+					\instrument, \noise,
+					\sampleRate, 0.002,
+					\atk, 1/128,
+					\rel, 0,
+					\amp, Pn(Penv([0.25, 0.25], [4], -2)),
+					\dur, Pseq([Pn(1/2, 3), Pn(1/8,12)].reverse, 1)/2,
+					\sustain, Pkey(\dur)/4
+				)
+			).play(~tempoClock);
+
+			Pdef(\pulseSegment_inst,
+				Pbind(
+					\instrument, \pulseSegment,
+					\freq, Pseq([Pn(440/2, 3), Pn(440*8, 12)],1),
+					\atk, 0,
+					\rel, 1/128,
+					\amp, 0.75,
+					\dur, Pseq([Pn(1/2, 3), Pn(1/8,12)].reverse, 1)/2
+				)
+			).play(~tempoClock);
+
+		});
+		if(measureSelectNum == 6 && countNum == 0, {
+
+			Pdef(\sineBass_inst,
+				Pbind(
+					\instrument, \sineBass,
+					\midinote, Pseq([Pseq([Pn(36, 2), Pn(41,14)], 1), Pseq([Pn(36, 4), Pn(41,12)], 1), Pseq([Pn(36, 6), Pn(41,22)], 1)],1),
+					\sampleRate, 0.001,
+					\atk, 0.00001,
+					\decay, 1/128,
+					\sustain, 0.5,
+					\rel, 0.01,
+					\amp, 0.4,
+					\dur, 1/4/2,
+					\sustain, Pkey(\dur)/1.5,
+
+				)
+			).play(~tempoClock);
+			Pdef(\pulseSegment_inst,
+				Pbind(
+					\instrument, \pulseSegment,
+					\freq, Pfunc({220.rand + 440*32}),
+					\atk, 0.0001,
+					\rel, 1/512,
+					\amp, 1,
+					\pan, Pseq([-0.25,0,0.25, 0, -0.5, 0, 0.5],inf),
+					\dur, Pn(1/6, 90)/2
+				)
+			).play(~tempoClock);
+
+
+		});
+		if(measureSelectNum == 7 && countNum == 0, {
+
+			Pdef(\sineBass_inst,
+				Pbind(
+					\instrument, \sineBass,
+					\freq, Pseq([440*32,440*24],inf),
+					\atk, 0,
+					//\rel, Pn(Penv([1/16, 1/64], [4])),
+					\rel, 0,
+					\amp, Pn(Penv([0, 0.5], [8], -4)),
+					\dur, 1/24,
+
+				)
+			).play(~tempoClock);
+
+		});
+		if(measureSelectNum == 8 && countNum == 0, {
+			Pdef(\sineBass_inst).stop;
+			Pdef(\pulseSegment_inst,
+				Pbind(
+					\instrument, \pulseSegment,
+					\freq, Pseq([Pn(440/2, 3), Pn(440*24, 12)],1),
+					\atk, 0,
+					\rel, Pseq([Pn(1/256, 3),Pn(1/512, 12)],1),
+					\amp, 1,
+					\dur, Pseq([Pn(1/2, 3), Pn(1/8,12)], 1)/2
+				)
+			).play(~tempoClock);
+
+		});
+		if(measureSelectNum == 8 && countNum == 2, {
+
+			Pdef(\sineBass_inst,
+				Pbind(
+					\instrument, \sineBass,
+					\midinote, 108,
+					\sampleRate, 0.2,
+					\atk, 0,
+					\decay, 1/128,
+					\sustain, 0.125,
+					\rel, Pseq([Pn(0.001, 3), 0.01], 1),
+					\amp, 0.5,
+					//\dur, Pseq([Pn(1/4, 2),Pn(1/3, 2)], 1),
+					\dur, Pn(1/4,1),
+					\sustain, Pkey(\dur)/2,
+
+				)
+			).play(~tempoClock);
+
+
+		});
+
+		if(measureSelectNum == 9 && countNum == 0, {
+
+
 			Pdef(\sine, Pbind(
 				\instrument, \saw,
 				\out, 0,
@@ -94,7 +412,7 @@ Task({
 			)).play(~tempoClock);
 		});
 
-		if(measureSelectNum ==2 && countNum == 4, {
+		if(measureSelectNum == 10 && countNum == 4, {
 
 			~sine_durSeqStream = Pseq([4],1).asStream;
 			Pdef(\sine, Pbind(
@@ -109,7 +427,7 @@ Task({
 			}
 		);
 
-		if(measureSelectNum ==3 && countNum == 0, {
+		if(measureSelectNum == 11 && countNum == 0, {
 
 			~sine_durSeqStream = Pxrand([Pn(0.125, 6), Pseq([0.125, 0.25, 0.5, 0.125], 1),Pseq([0.125, 0.25, 0.25, 0.125], 1)], inf).asStream;
 			Pdef(\sine, Pbind(
@@ -133,14 +451,14 @@ Task({
 
 		});
 
-		if(measureSelectNum ==7 && countNum == 0, {
+		if(measureSelectNum == 15 && countNum == 0, {
 			Pdef(\kick, Pbind(\instrument, \kick, \amp, 1,\dur,Pseq([set_1, 8 - set_1],inf))).play(~tempoClock);
 			Pdef(\sineBass, Pbind(\instrument, \sin, \freq, 36, \dur, 4, \sustain, 4, \amp, 0.125)).play(~tempoClock);
 		});
-		if(measureSelectNum ==9 && countNum == 0, {
+		if(measureSelectNum == 17 && countNum == 0, {
 			Pdef(\kick, Pbind(\instrument, \kick, \amp, 1,\dur,Pseq([set_1, set_2, 8 - set_1 - set_2],inf)))
 		});
-		if(measureSelectNum ==11 && countNum == 0, {
+		if(measureSelectNum == 19 && countNum == 0, {
 			~sine_freqSeqStream = Pxrand([108,115,108], inf).asStream;
 			Pdef(\sine, Pbind(\instrument, \saw, \freq, Pfunc({~sine_freqData = ~sine_freqSeqStream.next - 5; }),
 				\dur, Pfunc({~sine_durData = ~sine_durSeqStream.next; }),
@@ -149,10 +467,10 @@ Task({
 			));
 			Pdef(\kick, Pbind(\instrument, \kick, \amp, 1,\dur,Pseq([set_1, set_2, set_3, 8 - set_1 - set_2 - set_3],inf)))
 		});
-		if(measureSelectNum ==13 && countNum == 0, {
+		if(measureSelectNum == 21 && countNum == 0, {
 			Pdef(\kick, Pbind(\instrument, \kick, \amp, 1,\dur,Pseq([set_1, set_2, set_3, set_4, 8 - set_1 - set_2 - set_3 - set_4],inf)))
 		});
-		if(measureSelectNum ==15 && countNum == 0, {
+		if(measureSelectNum == 23 && countNum == 0, {
 			~sine_freqSeqStream = Pxrand([108,115,108], inf).asStream;
 			Pdef(\sine, Pbind(\instrument, \saw, \freq, Pfunc({~sine_freqData = ~sine_freqSeqStream.next - 5; }),
 				\dur, Pfunc({~sine2_durData = ~sine_durSeqStream.next; }),
@@ -170,11 +488,11 @@ Task({
 			Pdef(\kick, Pbind(\instrument, \kick, \amp, 1,\dur,Pseq([set_1, set_2, set_3, set_4, set_5, 8 - set_1 - set_2 - set_3 - set_4 - set_5],inf)))
 		});
 
-		if(measureSelectNum ==17 && countNum == 0, {
+		if(measureSelectNum == 25 && countNum == 0, {
 			Pdef(\kick, Pbind(\instrument, \kick, \amp, 1,\dur,Pseq([set_1, set_2, set_3, set_4, set_5, set_1, set_2, set_3, 8 - set_1 - set_2 - set_3 - set_4 - set_5 - set_6 ],inf)))
 		});
 
-		if(measureSelectNum ==18 && countNum == 4, {
+		if(measureSelectNum == 26 && countNum == 4, {
 			Pdef(\kick).stop;
 			Pdef(\snare).stop;
 			Pdef(\sineBass).stop;
@@ -195,7 +513,7 @@ Task({
 
 		});
 
-		if(measureSelectNum ==19 && countNum == 0, {
+		if(measureSelectNum == 27 && countNum == 0, {
 			Pdef(\whiteNoise).stop;
 			~sine_durSeqStream = Pxrand([Pn(0.125, 6), Pseq([0.125, 0.25, 0.5, 0.125], 1),Pseq([0.125, 0.25, 0.25, 0.125], 1)], inf).asStream;
 			Pdef(\sine, Pbind(
@@ -219,7 +537,7 @@ Task({
 			).play(~tempoClock);
 		});
 
-		if(measureSelectNum == 26 && countNum == 0, {//more work!!!!!! something should be happen here.
+		if(measureSelectNum == 34 && countNum == 0, {//more work!!!!!! something should be happen here.
 			Pdef(\sine).stop;
 			Pdef(\kick).stop;
 			Pdef(\whiteNoise, Pbind(\instrument, \whiteNoise, \amp, 0.25,\dur,4, \sustain, Pkey(\dur))).play(~tempoClock);
@@ -233,7 +551,7 @@ Task({
 			)).play(~tempoClock);
 		});
 
-		if(measureSelectNum ==27 && countNum == 0, {
+		if(measureSelectNum == 35 && countNum == 0, {
 			Pdef(\whiteNoise).stop;
 			~sine_durSeqStream = Pxrand([Pn(0.125, 6), Pseq([0.125, 0.25, 0.5, 0.125], 1),Pseq([0.125, 0.25, 0.25, 0.125], 1)], inf).asStream;
 			Pdef(\sine, Pbind(
@@ -299,7 +617,7 @@ Task({
 
 		});
 
-		if(measureSelectNum == 35 && countNum == 0, {//
+		if(measureSelectNum == 43 && countNum == 0, {//
 			//~sine_durSeqStream = Pxrand([Pn(0.125, 6), Pseq([0.125, 0.25, 0.5, 0.125], 1),Pseq([0.125, 0.25, 0.25, 0.125], 1)], inf).asStream;
 			~sine_durSeqStream = Pxrand(
 				[
@@ -367,7 +685,7 @@ Task({
 			)
 		});
 
-		if(measureSelectNum ==43 && countNum == 0, {
+		if(measureSelectNum == 51 && countNum == 0, {
 
 			var break = 1;
 			Pdef(\sine_2).stop;
@@ -432,13 +750,13 @@ Task({
 			)
 		});
 
-		if(measureSelectNum ==45 && countNum == 0, {
+		if(measureSelectNum == 53 && countNum == 0, {
 
 			Pdef(\sineBass, Pbind(\instrument, \sin, \freq, 29, \dur, 4, \sustain, 4)).play(~tempoClock);
 
 		});
 
-		if(measureSelectNum ==47 && countNum == 0, {
+		if(measureSelectNum == 55 && countNum == 0, {
 			Pdef(\sineBass).stop;
 			Pdef(\sine).stop;
 			Pdef(\kick).stop;
@@ -465,8 +783,8 @@ Task({
 			)).play(~tempoClock);
 		});
 
-
-		if(measureSelectNum == 48 && countNum == 0, {
+////////////////////////////////////////////////////////////////////////////////////////////
+		if(measureSelectNum == 56 && countNum == 0, {
 			Pdef(\logisticMap_Synth).stop;
 			Pdef(\kick,
 				Pbind(\instrument, \kick,
@@ -493,7 +811,7 @@ Task({
 
 
 		});
-		if(measureSelectNum == 55 && countNum == 4, {
+		if(measureSelectNum == 63 && countNum == 4, {
 			Pdef(\kick,
 				Pbind(\instrument, \kick,
 					\out, 0,
@@ -506,15 +824,80 @@ Task({
 
 		});
 
-		if(measureSelectNum == 56 && countNum == 0, {
+		if(measureSelectNum == 64 && countNum == 0, {
 			Pdef(\kick).stop;
 			//henonC change pitch
 			Pdef(\henonC,
 				Pbind(
 					\instrument, \henonC,
 					\freq, Pfunc({96}),
-					\param_a, Pxrand([1, 0.5, 0.25, 2],inf),
-					\param_b, Pxrand([0.25, 2, 0.5, 1],inf),
+					\param_a, Pxrand([0.25, 0.5, 0.25, 2],inf),
+					\param_b, Pxrand([0.5, 1, 0.75, 0.5],inf),
+					\amp, Prand([0.75,0.5,0.25],inf)/4,
+					\dur, Pfunc({~henonC_durData = ~kick_durSeqStream.next }),
+					\sustain, Pkey(\dur)-(Pkey(\dur)*0.25),
+					\OSC_Sender, Pfunc({m.sendMsg("/event/henonC", ~henonC_durData);})
+				)
+			).play(~tempoClock);
+
+			~sineBass_durSeqStream = Pseq([0.75, 0.75, 0.75, 1.5, 0.25], inf).asStream;
+
+			Pdef(\sineBass,
+				Pbind(\instrument, \sin,
+					\freq, 31,
+					\dur, Pfunc({~sineBass_durData = ~sineBass_durSeqStream.next}),
+					\amp, Pfunc({if(~sineBass_durData ==1.5, 0, 0.5)}),
+					\sustain, Pkey(\dur)*0.75,
+					\OSC_Sender, Pfunc({m.sendMsg("/event/sineBass", ~sineBass_durData);})
+				)
+			).play(~tempoClock);
+
+			Pdef(\kick,
+				Pbind(\instrument, \kick,
+					\dur, Pfunc({~sineBass_durData}),
+					\amp,0.5,
+
+					\OSC_Sender, Pfunc({m.sendMsg("/event/kick", ~sineBass_durData);})
+				)
+			).play(~tempoClock);
+
+		});
+		if(measureSelectNum == 67 && countNum == 6, {
+
+			Pdef(\kick).stop;
+			Pdef(\henonC).stop;
+			Pdef(\sineBass).stop;
+			Pdef(\noise_inst,
+				Pbind(
+					\instrument, \noise,
+					\sampleRate, 0.5,
+					\atk, 0,
+					\rel, 0,
+					\amp, 0.15,
+					\dur, 2,
+					\sustain, Pkey(\dur)/1.5
+				)
+			).play(~tempoClock);
+			Pdef(\kick,
+				Pbind(\instrument, \kick,
+					\dur, 1/4,
+					\amp,Pseq([Pn(0,4), Pn(0.5, 4)],1),
+
+					\OSC_Sender, Pfunc({m.sendMsg("/event/kick", ~sineBass_durData);})
+				)
+			).play(~tempoClock);
+
+		});
+		if(measureSelectNum == 68 && countNum == 0, {
+			Pdef(\kick).stop;
+			Pdef(\noise_inst).stop;
+			//henonC change pitch
+			Pdef(\henonC,
+				Pbind(
+					\instrument, \henonC,
+					\freq, Pfunc({96}),
+					\param_a, Pxrand([0.25, 0.5, 0.25, 2],inf),
+					\param_b, Pxrand([0.5, 1, 0.75, 0.5],inf),
 					\amp, Prand([0.75,0.5,0.25],inf)/4,
 					\dur, Pfunc({~henonC_durData = ~kick_durSeqStream.next }),
 					\sustain, Pkey(\dur)-(Pkey(\dur)*0.25),
@@ -545,14 +928,25 @@ Task({
 
 		});
 
-		if(measureSelectNum ==63 && countNum == 6, {
+		if(measureSelectNum == 71 && countNum == 6, {
 
 			Pdef(\kick).stop;
+			Pdef(\noise_inst,
+				Pbind(
+					\instrument, \noise,
+					\sampleRate, 0.5,
+					\atk, 0,
+					\rel, 0,
+					\amp, Pseq([Pn(0,12),Pn(0.125, 4)],1),
+					\dur, 1/8,
+					\sustain, Pkey(\dur)/1.5
+				)
+			).play(~tempoClock);
 
 		});
 
-		if(measureSelectNum ==64 && countNum == 0, {
-
+		if(measureSelectNum == 72 && countNum == 0, {
+			Pdef(\noise_inst).stop;
 			Pdef(\kick,
 				Pbind(\instrument, \kick,
 					\dur, Pfunc({~sineBass_durData}),
@@ -566,10 +960,10 @@ Task({
 				Pbind(
 					\instrument, \henonC,
 					\freq, Pfunc({96}),
-					\param_a, Pxrand([1, 0.5, 0.25, 2],inf),
-					\param_b, Pxrand([0.25, 2, 0.5, 1],inf),
+					\param_a, Pxrand([0.25, 0.5, 0.25, 2],inf),
+					\param_b, Pxrand([0.5, 1, 0.75, 0.5],inf),
 					\amp, Prand([0.75,0.5,0.25],inf)/4,
-					\dur, Pfunc({~henonC_durData = ~kick_durData }),
+					\dur, Pfunc({~henonC_durData = ~kick_durSeqStream.next }),
 					\sustain, Pkey(\dur)-(Pkey(\dur)*0.25),
 					\OSC_Sender, Pfunc({m.sendMsg("/event/henonC", ~henonC_durData);})
 				)
@@ -606,16 +1000,28 @@ Task({
 					\OSC_Sender, Pfunc({m.sendMsg("/event/click", ~click_durData);})
 			)).play(~tempoClock);
 
-
 		});
-		if(measureSelectNum ==71 && countNum == 4, {
+
+
+		if(measureSelectNum == 79 && countNum == 4, {
 
 			Pdef(\kick).stop;
+			Pdef(\noise_inst,
+				Pbind(
+					\instrument, \noise,
+					\sampleRate, 0.5,
+					\atk, 0,
+					\rel, 0,
+					\amp, Pseq([Pn(0,12),Pn(0.125, 4)],inf),
+					\dur, Pn(1/8, 16),
+					\sustain, Pkey(\dur)/1.5
+				)
+			).play(~tempoClock);
 
 		});
 
-		if(measureSelectNum ==72 && countNum == 0, {
-
+		if(measureSelectNum == 80 && countNum == 0, {
+			Pdef(\noise_inst).stop;
 			~sineBass_durSeqStream =Prand(
 				[
 					Pseq([0.75, 0.75, 0.75, Pn(0.25, 7)], 1),
@@ -654,6 +1060,23 @@ Task({
 				)
 			).play(~tempoClock);
 
+			Pdef(\noise_inst,
+				Pbind(
+					\instrument, \noise,
+					\sampleRate, 0.5,
+					\atk, 0,
+					\rel, 0,
+					\amp, Prand([Pseq([0, 0.125,0,Pn(0.125, 4)],1), Pseq([0, 0,0,Pn(0.125, 4)],1)],inf),
+					\dur, Pseq([1.5, 1.5, 4.5, Pn(1/8, 4)],inf),
+					\sustain, Pkey(\dur)/1.5
+				)
+			).play(~tempoClock);
+
+
+		});
+
+		if(measureSelectNum == 88 && countNum == 0, {
+
 			Pdef(\logisticMap_Synth,
 				Pbind(\instrument, \logisticMap_Synth,
 					\out, 0,
@@ -662,13 +1085,9 @@ Task({
 					\logiFreq, Pxrand([1000, 750, 2000, 400, 200],inf),
 					\dur, 8,
 					\sustain, Pkey(\dur)-2,
-					\amp, 0.125/2
+					\amp, 0.125/4
 				)
 			).play(~tempoClock);
-
-		});
-
-		if(measureSelectNum == 80 && countNum == 0, {
 
 			Pdef(\sine, Pbind(
 				\instrument, \saw,
@@ -682,7 +1101,7 @@ Task({
 			)).play(~tempoClock);
 
 		});
-		if(measureSelectNum == 88 && countNum == 0, {
+		if(measureSelectNum == 96 && countNum == 0, {
 
 
 			~sineBass_durSeqStream =Prand(
@@ -706,7 +1125,7 @@ Task({
 
 		});
 
-		if(measureSelectNum == 96 && countNum == 0, {
+		if(measureSelectNum == 104 && countNum == 0, {
 			Pdef(\logisticMap_Synth).stop;
 			Pdef(\snare_2).stop;
 			Pdef(\henonC,
@@ -751,7 +1170,7 @@ Task({
 			).play(~tempoClock);
 		});
 
-		if(measureSelectNum == 104 && countNum == 0, {
+		if(measureSelectNum == 112 && countNum == 0, {
 			~click_durSeqStream = Prand([Pn(0.25, Prand([2, 4], 1)),Pn(0.125,Prand([2, 4], 1))],inf).asStream;
 
 			Pdef(\snare_2,
@@ -798,7 +1217,8 @@ Task({
 			).play(~tempoClock);
 
 		});
-		if(measureSelectNum == 112 && countNum == 0, {
+		if(measureSelectNum == 120 && countNum == 0, {
+			Pdef(\noise_inst).stop;
 			~click_durSeqStream = Prand([Pn(0.25, Prand([2, 4], 1)),Pn(0.125,Prand([2, 4], 1))],inf).asStream;
 
 			Pdef(\snare_2,
@@ -841,7 +1261,7 @@ Task({
 					//\dur, Pseq([0.625, 0.375,3, 0.625, Pn(0.125, 3), 3],inf),
 					//\amp, Pseq([0, 0.125, 0, 0, Pn(0.125, 3), 0],inf),
 					\amp, 0,
-					\sustain, Pkey(\dur)*Prand([0.25, 0.5, 0.125, 0.0625],inf),
+					\sustain, Pkey(\dur)*Prand([0.125, 0.25, 0.125/2, 0.0625/2],inf),
 					\OSC_Sender, Pfunc({m.sendMsg("/event/grayNoise", ~grayNoise_durData);})
 				)
 			).play(~tempoClock);
@@ -850,7 +1270,7 @@ Task({
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		if(measureSelectNum == 120 && countNum == 0, {
+		if(measureSelectNum == 128 && countNum == 0, {
 			m.sendMsg("/event/reset", 1);
 
 			Pdef(\henonC).stop;
@@ -858,8 +1278,6 @@ Task({
 			Pdef(\kick).stop;
 			Pdef(\snare_2).stop;
 			Pdef(\sine).stop;
-
-
 
 		});
 
