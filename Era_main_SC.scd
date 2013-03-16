@@ -65,7 +65,7 @@ reverb.set(\in, 33,\mix, 0.5, \room, 0.99, \dump, 0.5);
 ~henonFx = Synth.after(1, \henonC_FX);
 ~henonFx.set(\in, 37);
 
-totalMeasureSelectNum = 0;
+totalMeasureSelectNum = 55;
 
 ///////
 Task({
@@ -84,15 +84,18 @@ Task({
 		);
 
 		if(totalMeasureSelectNum == 1 && totalCountNum == 0,{
+			m.sendMsg("/event/modeType", 0);
 			(~currentDocPath++"intro_section.scd").load;
 		});
 
 		if(totalMeasureSelectNum == 9 && totalCountNum == 0,{
+			m.sendMsg("/event/modeType", 1);
 			~intro_section_Task.stop;
 			(~currentDocPath++"1st_section.scd").load;
 		});
 
 		if(totalMeasureSelectNum == 56 && totalCountNum == 0,{
+			m.sendMsg("/event/modeType", 2);
 			Pdef(\logisticMap_Synth).stop;
 			~first_section_Task.stop;
 			(~currentDocPath++"2nd_section.scd").load;
