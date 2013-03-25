@@ -8,6 +8,7 @@
 (~currentDocPath++"Era_Setting.scd").load;
 )
 
+Server.internal.options.device =  "Soundflower (64ch)";
 
 (
 
@@ -65,7 +66,7 @@ reverb.set(\in, 33,\mix, 0.5, \room, 0.99, \dump, 0.5);
 ~henonFx = Synth.after(1, \henonC_FX);
 ~henonFx.set(\in, 37);
 
-totalMeasureSelectNum = 55;
+totalMeasureSelectNum = 0;
 
 ///////
 Task({
@@ -86,6 +87,7 @@ Task({
 		if(totalMeasureSelectNum == 1 && totalCountNum == 0,{
 			m.sendMsg("/event/modeType", 0);
 			(~currentDocPath++"intro_section.scd").load;
+
 		});
 
 		if(totalMeasureSelectNum == 9 && totalCountNum == 0,{
@@ -101,6 +103,7 @@ Task({
 			(~currentDocPath++"2nd_section.scd").load;
 		});
 		if(totalMeasureSelectNum == 128 && totalCountNum == 0,{
+			m.sendMsg("/event/modeType", 3);
 			Pdef(\henonC).stop;
 			Pdef(\grayNoise).stop;
 			Pdef(\kick).stop;
@@ -111,9 +114,16 @@ Task({
 		});
 
 		if(totalMeasureSelectNum == 193 && totalCountNum == 0,{
+			m.sendMsg("/event/particle_rotateMode", 1);
+
 			Pdef(\chord).stop;
 			~third_section_Task.stop;
 			(~currentDocPath++"4th_section.scd").load;
+		});
+		if(totalMeasureSelectNum == 238 && totalCountNum == 0,{
+			m.sendMsg("/event/modeType", 4);
+
+
 		});
 
 

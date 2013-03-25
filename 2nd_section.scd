@@ -12,6 +12,7 @@ var set_1,set_2,set_3, set_4, set_5, set_6 ,set_7,set_8, set_9, set_10;
 measureSelectNum = 0;
 countNum = 0;
 
+~kick_durSeqStream = Pstutter(2, Pseq([set_1, set_2,set_3, set_4, set_5, set_1, set_2,set_3],inf) ).asStream;
 
 ~second_section_Task =
 Task({

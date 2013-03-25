@@ -97,11 +97,19 @@ Task({
 		});
 
 		if(measureSelectNum == 7 && countNum == 0, {
-			Pdef(\kick, Pbind(\instrument, \kick, \amp, 1,\dur,Pseq([set_1, 8 - set_1],inf))).play(~tempoClock);
+			~kick_durSeqStream = Pseq([set_1, 8 - set_1],inf).asStream;
+			Pdef(\kick, Pbind(\instrument, \kick, \amp, 1,\dur,Pfunc({~kick_durData = ~kick_durSeqStream.next; }),
+				\osc, Pfunc({arg env;
+				m.sendMsg("/event/kick", ~kick_durData);
+			}))).play(~tempoClock);
 			Pdef(\sineBass, Pbind(\instrument, \sin, \freq, 36, \dur, 4, \sustain, 4, \amp, 0.125)).play(~tempoClock);
 		});
 		if(measureSelectNum == 9 && countNum == 0, {
-			Pdef(\kick, Pbind(\instrument, \kick, \amp, 1,\dur,Pseq([set_1, set_2, 8 - set_1 - set_2],inf)))
+			~kick_durSeqStream = Pseq([set_1, set_2, 8 - set_1 - set_2],inf).asStream;
+			Pdef(\kick, Pbind(\instrument, \kick, \amp, 1,\dur,Pfunc({~kick_durData = ~kick_durSeqStream.next; }),
+				\OSC_Sender, Pfunc({
+				m.sendMsg("/event/kick", ~kick_durData);
+			}))).play(~tempoClock);
 		});
 		if(measureSelectNum == 11 && countNum == 0, {
 			~sine_freqSeqStream = Pxrand([108,115,108], inf).asStream;
@@ -112,10 +120,18 @@ Task({
 				\sustain, Pkey(\dur)/1.5,
 				\OSC_Sender, Pfunc({m.sendMsg("/event/sine", ~sine_durData);})
 			));
-			Pdef(\kick, Pbind(\instrument, \kick, \amp, 1,\dur,Pseq([set_1, set_2, set_3, 8 - set_1 - set_2 - set_3],inf)))
+			~kick_durSeqStream = Pseq([set_1, set_2, set_3, 8 - set_1 - set_2 - set_3],inf).asStream;
+			Pdef(\kick, Pbind(\instrument, \kick, \amp, 1,\dur, Pfunc({~kick_durData = ~kick_durSeqStream.next; }),
+				\OSC_Sender, Pfunc({
+				m.sendMsg("/event/kick", ~kick_durData);
+			}))).play(~tempoClock);
 		});
 		if(measureSelectNum == 13 && countNum == 0, {
-			Pdef(\kick, Pbind(\instrument, \kick, \amp, 1,\dur,Pseq([set_1, set_2, set_3, set_4, 8 - set_1 - set_2 - set_3 - set_4],inf)))
+			~kick_durSeqStream = Pseq([set_1, set_2, set_3, set_4, 8 - set_1 - set_2 - set_3 - set_4],inf).asStream;
+			Pdef(\kick, Pbind(\instrument, \kick, \amp, 1,\dur,Pfunc({~kick_durData = ~kick_durSeqStream.next; }),
+				\OSC_Sender, Pfunc({
+				m.sendMsg("/event/kick", ~kick_durData);
+			}))).play(~tempoClock);
 		});
 		if(measureSelectNum == 15 && countNum == 0, {
 			~sine_freqSeqStream = Pxrand([108,115,108], inf).asStream;
@@ -132,11 +148,23 @@ Task({
 				\panPos, 1,
 				\OSC_Sender, Pfunc({m.sendMsg("/event/sine_2", ~sine_durData);})
 			)).play(~tempoClock);
-			Pdef(\kick, Pbind(\instrument, \kick, \amp, 1,\dur,Pseq([set_1, set_2, set_3, set_4, set_5, 8 - set_1 - set_2 - set_3 - set_4 - set_5],inf)))
+
+			~kick_durSeqStream = Pseq([set_1, set_2, set_3, set_4, 8 - set_1 - set_2 - set_3 - set_4],inf).asStream;
+			Pdef(\kick, Pbind(\instrument, \kick, \amp, 1,\dur, Pfunc({~kick_durData = ~kick_durSeqStream.next; }),
+				\OSC_Sender, Pfunc({
+				m.sendMsg("/event/kick", ~kick_durData);
+			}))).play(~tempoClock);
 		});
 
 		if(measureSelectNum == 17 && countNum == 0, {
-			Pdef(\kick, Pbind(\instrument, \kick, \amp, 1,\dur,Pseq([set_1, set_2, set_3, set_4, set_5, set_1, set_2, set_3, 8 - set_1 - set_2 - set_3 - set_4 - set_5 - set_6 ],inf)))
+			~kick_durSeqStream = Pseq([set_1, set_2, set_3, set_4, set_5, set_1, set_2, set_3, 8 - set_1 - set_2 - set_3 - set_4 - set_5 - set_6 ],inf).asStream;
+			Pdef(\kick,
+				Pbind(\instrument, \kick, \amp, 1,
+					\dur, Pfunc({~kick_durData = ~kick_durSeqStream.next; }),
+					\OSC_Sender, Pfunc({
+						m.sendMsg("/event/kick", ~kick_durData);
+					})
+			)).play(~tempoClock);
 		});
 
 		if(measureSelectNum == 18 && countNum == 4, {
