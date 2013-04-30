@@ -2,12 +2,12 @@
 
 var countNum, measureSelectNum;
 var set_1,set_2,set_3, set_4, set_5, set_6 ,set_7,set_8, set_9, set_10;
-		set_1 = 0.125;
-		set_2 = set_1 + set_1;
-		set_3 = set_1 + set_2;
-		set_4 = set_2;
-		set_5 = set_4+set_4;
-		set_6 = set_4+set_5;// set_6 = set_1 + set_2 + set_3
+set_1 = 0.125;
+set_2 = set_1 + set_1;
+set_3 = set_1 + set_2;
+set_4 = set_2;
+set_5 = set_4+set_4;
+set_6 = set_4+set_5;// set_6 = set_1 + set_2 + set_3
 
 measureSelectNum = 0;
 countNum = 0;
@@ -37,9 +37,11 @@ Task({
 
 		("count : "++ countNum).postln;
 
-//55
+		//55
 		////////////////////////////////////////////////////////////////////////////////////////////
 		if(measureSelectNum == 1 && countNum == 0, {
+			~reverb = Synth.after(1, \reverb);
+			~reverb.set(\in, 33,\mix, 0.5, \room, 0.99, \dump, 0.5);
 
 			Pdef(\kick,
 				Pbind(\instrument, \kick,

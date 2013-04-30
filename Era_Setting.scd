@@ -48,3 +48,17 @@ Pdef(\chord).stop;
 
 Pdef(\phasorNoise).stop;
 Pdef(\stutter).stop;
+
+
+///
+
+
+~logisticFilterFx.free;
+~henonFx.free;
+~reverb.free;
+
+~sourceOsc.free;
+~stutterOSc.free;
+
+
+~henonFx.set(\in, 37);

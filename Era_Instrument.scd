@@ -305,6 +305,69 @@ SynthDef(\sineWave,
 	}
 ).store;
 
+
+//Synth
+
+SynthDef(\reverb, {
+	|in, out = 0, mix = 0.5, room = 0.5, dump = 0.5 |
+	var input, fx, output;
+	input = In.ar(in, 2);
+	fx = FreeVerb.ar(input, mix, room, dump, 1);
+	fx = Pan2.ar(fx,0);
+	Out.ar(out, fx);
+}).store;
+
+SynthDef(\sawSynth, {
+	|out = 0, freq = 440, phase = 0, atk = 0, decay = 0, sus = 1, rel = 0.25, gate = 1, pan = 0, amp = 0.25|
+	var osc, env;
+
+	//osc = Mix.fill((2.rand+1) * 2, {|i| SinOsc.ar(i + 1 * freq, phase, 1, 0)}); //fill number should be changed by power of 2; 2, 4, 8, , 16
+	osc = Saw.ar(freq, 1, 0);
+	env = EnvGen.ar(Env.adsr(atk, decay, sus, rel, curve: 0),gate, amp, doneAction: 2);
+	osc = osc * env;
+	osc = RLPF.ar(osc, freq/1.5, 0.75);
+	osc = Pan2.ar(osc, pan, 1);
+	Out.ar(out, osc);
+}).store;
+
+SynthDef(\resNoise, {
+	|out = 0, freq = #[440], phase = 0, atk = 0, decay = 0, sus = 1, rel = 0.25, gate = 1, pan = 0, amp = 1|
+	var osc, env;
+
+	osc = SinOsc.ar(freq, phase,0.5) + PinkNoise.ar(0.25);
+	env = EnvGen.ar(Env.adsr(atk, decay, sus, rel, curve: 0),gate, amp, doneAction: 2);
+	osc = osc * env;
+	osc = RLPF.ar(osc, freq*8, 0.03125/2);
+	osc = Pan2.ar(osc, pan, 1);
+	Out.ar(out, osc);
+}).store;
+
+SynthDef(\loopBass, {
+	|out = 0, freq = #[440], phase = 0, atk = 0, decay = 0, sus = 1, rel = 0.25, gate = 1, pan = 0, amp = 1|
+	var osc, env;
+
+	osc = SinOsc.ar(freq, phase, 1);
+	env = EnvGen.ar(Env.adsr(atk, decay, sus, rel, curve: -4),gate, amp, doneAction: 2);
+	osc = osc * env;
+
+	osc = Pan2.ar(osc, pan, 1);
+	Out.ar(out, osc);
+}).store;
+
+SynthDef(\revSaw, {
+	|out = 0, freq, amp = 0.125, gate = 1, sampleRate = 0.5, bitRate = 32, panPos = 0|
+
+	var osc, env;
+	osc = Saw.ar(freq.midicps);
+
+	env = EnvGen.kr(Env.adsr(0.0,0 ,1,0.0),gate,  doneAction:2);
+	osc = osc * env * amp;
+	//osc = Decimator.ar(osc,LinLin.kr(sampleRate, 0, 1, 0, SampleRate.ir), bitRate);
+	osc = Pan2.ar(osc, panPos);
+	out = Out.ar(out, osc);
+
+}).store;
+
 ///////////   FX  /////////////////
 
 SynthDef(\reverb, {
