@@ -49,7 +49,7 @@ Task({
 			~amSine_durSeqStream = Pseq([11,5],inf).asStream;
 			~grainSin_durSeqStream = Pseq([4,12],inf).asStream;
 			~grainSin2_durSeqStream = Pseq([24.75,1,6.25],inf).asStream;
-			~sineHit_durSeqStream = Pwrand([1,2,0.125],[6,6,1].normalizeSum,inf).asStream;
+			~sineHit_durSeqStream = Pwrand([1,2,1],[6,6,1].normalizeSum,inf).asStream; //
 			~sinePulse_L_durSeqStream = Pxrand([0.25,0.25,0.5,Pn(0.25, 4)],inf).asStream;
 			~sinePulse_R_durSeqStream = Pxrand([0.25,0.25,0.5,Pn(0.25, 4)],inf).asStream;
 
@@ -456,11 +456,10 @@ Task({
 		if(measureSelectNum == 42 && countNum == 0, {
 			Pdef(\beat).stop;
 			Pdef(\beat).reset;
-			//Pdef(\sinePulse_L).stop;
-			//Pdef(\sinePulse_R).stop;
+
 			Pdef(\amSineBass).reset;
 			~sinePulse_R_durSeqStream = ~sinePulse_L_durSeqStream = Pseq([0.5,Prand([0.5,Pn(0.25,2)],inf)],inf).asStream;
-			//~sinePulse_R_durSeqStream = ~sinePulse_L_durSeqStream = Pxrand([0.25,0.25,0.5,Pn(0.25, 4)],inf).asStream;
+
 			Pdef(\amSineBass).play(~tempoClock);
 
 			~amSineBass_durSeqStream = Pseq([Pn(0.5,3),2.5,28],inf).asStream;
@@ -516,34 +515,6 @@ Task({
 			);
 			/////////////////////////////////////
 			~kick_durSeqStream=	Pseq([Pn(0.25,8),6,Pn(0.25,8),5,Pn(0.25,4),0.5,7.5,0.5,Pn(0.5,4),4,Pn(0.25,6)],inf).asStream;
-			/*~kick_durSeqStream=	Pseq([
-				Prand(
-					[
-						Pseq([Pn(0.25,8),6],1),
-						Pseq([1,Pn(0.25,8),5],1)
-					],
-					1),
-				Prand(
-					[
-						Pseq([7,Pn(0.25,4)],1),
-						Pseq([5,Pn(0.25,8)],1)
-					],
-					1),
-				Prand(
-					[
-						Pseq([0.5,7,0.5],1),
-						Pseq([0.5,3.5,Pn(0.25,6),0.5,Pn(0.25,8)],1)
-					],
-					1),
-				Prand(
-					[
-						Pseq([0.5,6,Pn(0.25,6)],1),
-						Pseq([0.5,Pn(0.25,8),4,Pn(0.25,6)],1),
-						Pseq([1.5,Pn(0.25,4),1,Pn(0.25,10),0.5,Pn(0.25,6)],1)
-					],
-					1);
-				],inf
-			).asStream;*/
 
 			Pdef(\snare,
 				Pbind(\instrument,\click,
@@ -570,9 +541,10 @@ Task({
 					\midiPitch,Pxrand([[48,53,55],[48,53,57],[50,53,55]],inf),
 					\atk,0.25,
 					\rel,0.25,
-					\amp,0.0625/2,
+					\amp,0.0625/3,
 					\gate,1,
 					\dur,~chord_durSeqStream,
+					\sustain, 0.5,
 					\OSC_Sender, Pfunc({m.sendMsg("/event/chord", ~chord_durData);})
 				)
 
@@ -620,9 +592,10 @@ Task({
 					\midiPitch,Pxrand([[60,53,55],[60,53,57],[62,53,55]],inf),
 					\atk,0.25,
 					\rel,0.25,
-					\amp,0.0625/2,
+					\amp,0.0625/3,
 					\gate,1,
 					\dur,~chord_durSeqStream,
+					\sustain, 0.5,
 					\OSC_Sender, Pfunc({m.sendMsg("/event/chord", ~chord_durData);})
 				)
 			).play(~tempoClock);
@@ -658,7 +631,7 @@ Task({
 				)
 			).play(~tempoClock);
 
-			~amSine_durSeqStream = Pseq([256],inf).asStream;
+			~amSine_durSeqStream = Pseq([32],inf).asStream;
 			Pdef(\amSine,
 				Pbind(\instrument,\amSine,
 					\amp,0.5,
@@ -687,6 +660,7 @@ Task({
 			Pdef(\whiteNoise).stop;
 			Pdef(\amSineBass).stop;
 			Synth(\kick);
+
 			//Pdef(\sinePulse_L).stop;
 			//Pdef(\sinePulse_R).stop;
 		});

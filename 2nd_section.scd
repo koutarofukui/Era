@@ -29,6 +29,7 @@ Task({
 			{
 				measureSelectNum = measureSelectNum  + 1;
 				("measure : "++ measureSelectNum).postln;
+				~update.try;
 
 			}
 		);
@@ -48,7 +49,7 @@ Task({
 					\out, 0,
 					\dur, Pfunc({~kick_durData = ~kick_durSeqStream.next}),
 					\amp,0.5,
-
+					\rel, Pfunc({if(~kick_durData >= 0.25, 0.03125*2, 0.03125)}),
 					\OSC_Sender, Pfunc({m.sendMsg("/event/kick", ~kick_durData);})
 				)
 			).play(~tempoClock);
@@ -57,9 +58,9 @@ Task({
 				Pbind(
 					\instrument, \henonC,
 					\freq, Pfunc({84}),
-					\param_a, Pxrand([1, 0.5, 0.25, 2],inf),
-					\param_b, Pxrand([0.25, 2, 0.5, 1],inf),
-					\amp, Prand([0.75,0.5,0.25],inf)/4,
+					\param_a, Pxrand([1, 0.5, 0.25, 1],inf),
+					\param_b, Pxrand([0.25, 0.75, 0.5, 1],inf),
+					\amp, Prand([0.625,0.5,0.25],inf)/4,
 					\dur, Pfunc({~henonC_durData = ~kick_durData }),
 					\sustain, Pkey(\dur)-(Pkey(\dur)*0.25),
 					\OSC_Sender, Pfunc({m.sendMsg("/event/sine",  ~henonC_durData);})
@@ -74,7 +75,7 @@ Task({
 					\out, 0,
 					\dur, Pfunc({~kick_durData = ~kick_durSeqStream.next}),
 					\amp,0,
-
+					\rel, Pfunc({if(~kick_durData >= 0.25, 0.03125*2, 0.03125)}),
 					\OSC_Sender, Pfunc({m.sendMsg("/event/kick", ~kick_durData);})
 				)
 			);
@@ -88,9 +89,9 @@ Task({
 				Pbind(
 					\instrument, \henonC,
 					\freq, Pfunc({96}),
-					\param_a, Pxrand([0.25, 0.5, 0.25, 2],inf),
-					\param_b, Pxrand([0.5, 1, 0.75, 0.5],inf),
-					\amp, Prand([0.75,0.5,0.25],inf)/4,
+					\param_a, Pxrand([0.25, 0.5, 0.25, 0.5],inf),
+					\param_b, Pxrand([0.5, 0.25, 0.25, 0.5],inf),
+					\amp, Prand([0.625,0.5,0.25],inf)/4,
 					\dur, Pfunc({~henonC_durData = ~kick_durSeqStream.next }),
 					\sustain, Pkey(\dur)-(Pkey(\dur)*0.25),
 					\OSC_Sender, Pfunc({m.sendMsg("/event/henonC", ~henonC_durData);})
@@ -109,11 +110,13 @@ Task({
 				)
 			).play(~tempoClock);
 
+
+
 			Pdef(\kick,
 				Pbind(\instrument, \kick,
 					\dur, Pfunc({~sineBass_durData}),
 					\amp,0.5,
-
+					\rel, Pfunc({if(~sineBass_durData >= 0.25, 0.03125*2, 0.03125)}),
 					\OSC_Sender, Pfunc({m.sendMsg("/event/kick", ~sineBass_durData);})
 				)
 			).play(~tempoClock);
@@ -138,7 +141,7 @@ Task({
 			Pdef(\kick,
 				Pbind(\instrument, \kick,
 					\dur, 1/4,
-					\amp,Pseq([Pn(0,4), Pn(0.5, 4)],1),
+					\amp,Pseq([Pn(0,3), Pn(0.5, 4)],1),
 
 					\OSC_Sender, Pfunc({m.sendMsg("/event/kick", ~sineBass_durData);})
 				)
@@ -153,9 +156,9 @@ Task({
 				Pbind(
 					\instrument, \henonC,
 					\freq, Pfunc({96}),
-					\param_a, Pxrand([0.25, 0.5, 0.25, 2],inf),
-					\param_b, Pxrand([0.5, 1, 0.75, 0.5],inf),
-					\amp, Prand([0.75,0.5,0.25],inf)/4,
+					\param_a, Pxrand([0.25, 0.5, 0.25, 0.5],inf),
+					\param_b, Pxrand([0.5, 0.25, 0.25, 0.5],inf),
+					\amp, Prand([0.625,0.5,0.25],inf)/4,
 					\dur, Pfunc({~henonC_durData = ~kick_durSeqStream.next }),
 					\sustain, Pkey(\dur)-(Pkey(\dur)*0.25),
 					\OSC_Sender, Pfunc({m.sendMsg("/event/henonC", ~henonC_durData);})
@@ -174,11 +177,13 @@ Task({
 				)
 			).play(~tempoClock);
 
+
+
 			Pdef(\kick,
 				Pbind(\instrument, \kick,
 					\dur, Pfunc({~sineBass_durData}),
 					\amp,0.5,
-
+					\rel, Pfunc({if(~sineBass_durData >= 0.25, 0.03125*2, 0.03125)}),
 					\OSC_Sender, Pfunc({m.sendMsg("/event/kick", ~sineBass_durData);})
 				)
 			).play(~tempoClock);
@@ -208,7 +213,7 @@ Task({
 				Pbind(\instrument, \kick,
 					\dur, Pfunc({~sineBass_durData}),
 					\amp,0.5,
-
+					\rel, Pfunc({if(~sineBass_durData >= 0.25, 0.03125*2, 0.03125)}),
 					\OSC_Sender, Pfunc({m.sendMsg("/event/kick", ~sineBass_durData);})
 				)
 			).play(~tempoClock);
@@ -217,14 +222,15 @@ Task({
 				Pbind(
 					\instrument, \henonC,
 					\freq, Pfunc({96}),
-					\param_a, Pxrand([0.25, 0.5, 0.25, 2],inf),
-					\param_b, Pxrand([0.5, 1, 0.75, 0.5],inf),
-					\amp, Prand([0.75,0.5,0.25],inf)/4,
+					\param_a, Pxrand([0.25, 0.5, 0.25, 0.5],inf),
+					\param_b, Pxrand([0.5, 1, 0.25, 0.5],inf),
+					\amp, Prand([0.625,0.5,0.25],inf)/6,
 					\dur, Pfunc({~henonC_durData = ~kick_durSeqStream.next }),
-					\sustain, Pkey(\dur)-(Pkey(\dur)*0.25),
+					\sustain, Pkey(\dur)-(Pkey(\dur)*0.125),
 					\OSC_Sender, Pfunc({m.sendMsg("/event/henonC", ~henonC_durData);})
 				)
 			).play(~tempoClock);
+
 			~sineBass_durSeqStream = Pseq(
 				[
 					Pseq([0.75, 0.75, 0.75, 1.5, 0.25], 1),
@@ -244,18 +250,30 @@ Task({
 				)
 			);
 
-			~click_durSeqStream = Prand([Pn(0.25, Prand([2, 4], 1)),Pn(0.125,Prand([2, 4], 1))],inf).asStream;
-
+			//~click_durSeqStream = Prand([Pn(0.25, Prand([2, 4], 1)),Pn(0.125,Prand([2, 4], 1))],inf).asStream;
+			~click_durSeqStream = Pxrand([Pseq([Pn(0.25, 2), Prand([Pn(0.125, 4)], 1)], 1), Pn(0.25, 4), Pn(0.125, 8)],inf).asStream;
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 			Pdef(\snare_2,
 				Pbind(\instrument,\click_2,
 					\out, 0,
 					\room,Pxrand([0.125,0.25, 0.5, 0.75],inf),
 					\dur,Pfunc({~click_durData = ~click_durSeqStream.next; }),
 					\gate,1,
-					\amp,Prand([0.75,0.5,0.25],inf),
+					\amp,Prand([0.5,0.25],inf),
 					\sustain,Pkey(\dur)-(Pkey(\dur)/1.5),
 					\OSC_Sender, Pfunc({m.sendMsg("/event/click", ~click_durData);})
 			)).play(~tempoClock);
+
+			Pdef(\reverb_sineWave,
+				Pbind(\instrument, \sin,
+					\out, [0, 41],
+					\rel, 0.125,
+					\freq, 81,
+					\dur, Pseq([2.375, 29.625],inf),
+					\sustain, 0.0625,
+					\amp, Pseq([0, 0.03125/2],inf)
+				)
+			).play(~tempoClock);
 
 		});
 
@@ -295,13 +313,25 @@ Task({
 					\OSC_Sender, Pfunc({m.sendMsg("/event/sineBass", ~sineBass_durData);})
 				)
 			);
+
+			Pdef(\CellularAutomatonSynth,
+				Pbind(
+					\instrument, \cellSynth,
+					\freq, Pxrand([12, 24, 36, 48], inf),
+					\dur, Pseq([3.125, 0.625, 3.25, 0.5, 0.5], inf),
+					\amp, Pseq([0, 0.25, 0, 0.25, 0], inf),
+					\sustain, Pkey(\dur),
+					\modFreq,  Pxrand([0.0625, 0.125, 0.25, 0.5, 1, 2],inf),
+					\modWidth, Pxrand([0.0625, 0.125, 0.25, 0.5, 1, 2],inf)
+			)).play(~tempoClock);
+
 			Pdef(\henonC,
 				Pbind(
 					\instrument, \henonC,
 					\freq, Pfunc({84}),
-					\param_a, Pxrand([1, 0.5, 0.25, 2],inf),
-					\param_b, Pxrand([0.25, 2, 0.5, 1],inf),
-					\amp, Prand([0.75,0.5,0.25],inf)/4,
+					\param_a, Pxrand([0.25, 0.5, 0.25, 0.5],inf),
+					\param_b, Pxrand([0.5, 1, 0.25, 0.5],inf),
+					\amp, Prand([0.5,0.25],inf)/6,
 					\dur, Pfunc({~henonC_durData = ~kick_durData }),
 					\sustain, Pkey(\dur)-(Pkey(\dur)*0.25),
 					\OSC_Sender, Pfunc({m.sendMsg("/event/henonC", ~henonC_durData);})
@@ -312,7 +342,7 @@ Task({
 					\out, 0,
 					\dur, Pfunc({~kick_durData = ~kick_durSeqStream.next}),
 					\amp,0.5,
-
+					\rel, Pfunc({if(~kick_durData >= 0.25, 0.03125*2, 0.03125)}),
 					\OSC_Sender, Pfunc({m.sendMsg("/event/kick", ~kick_durData);})
 				)
 			).play(~tempoClock);
@@ -345,6 +375,8 @@ Task({
 					\amp, 0.125/4
 				)
 			).play(~tempoClock);
+
+
 
 			Pdef(\sine, Pbind(
 				\instrument, \saw,
@@ -385,12 +417,14 @@ Task({
 		if(measureSelectNum == 49 && countNum == 0, {
 			Pdef(\logisticMap_Synth).stop;
 			Pdef(\snare_2).stop;
+			Pdef(\CellularAutomatonSynth).stop;
+			Pdef(\reverb_sineWave).stop;
 			Pdef(\henonC,
 				Pbind(
 					\instrument, \henonC,
 					\freq, Pfunc({84}),
-					\param_a, Pxrand([1, 0.5, 0.25, 2],inf),
-					\param_b, Pxrand([0.25, 2, 0.5, 1],inf),
+					\param_a, Pxrand([0.25, 0.5, 0.25, 0.5],inf),
+					\param_b, Pxrand([0.5, 0.25, 0.25, 0.5],inf),
 					\amp, 0,
 					\dur, Pfunc({~henonC_durData = ~kick_durData }),
 					\sustain, Pkey(\dur)-(Pkey(\dur)*0.25),
@@ -421,7 +455,7 @@ Task({
 					\out, 0,
 					\dur, Pfunc({~sineBass_durData}),
 					\amp,0.5,
-
+					\rel, Pfunc({if(~sineBass_durData >= 0.5, 0.03125*2, 0.03125)}),
 					\OSC_Sender, Pfunc({m.sendMsg("/event/kick", ~sineBass_durData);})
 				)
 			).play(~tempoClock);
@@ -439,8 +473,8 @@ Task({
 		});
 
 		if(measureSelectNum == 57 && countNum == 0, {
-			~click_durSeqStream = Prand([Pn(0.25, Prand([2, 4], 1)),Pn(0.125,Prand([2, 4], 1))],inf).asStream;
-
+			//~click_durSeqStream = Prand([Pn(0.25, Prand([2, 4], 1)),Pn(0.125,Prand([2, 4], 1))],inf).asStream;
+			~click_durSeqStream = Pxrand([Pseq([Pn(0.25, 2), Prand([Pn(0.125, 4)], 1)], 1), Pn(0.25, 4), Pn(0.125, 8)],inf).asStream;
 			Pdef(\snare_2,
 				Pbind(\instrument,\click_2,
 					\out, 0,
@@ -452,25 +486,34 @@ Task({
 					\OSC_Sender, Pfunc({m.sendMsg("/event/click", ~click_durData);})
 			)).play(~tempoClock);
 			Pdef(\sineBass).stop;
-			/*Pdef(\henonC,
-			Pbind(
-			\instrument, \henonC,
-			\freq, Pfunc({96}),
-			\param_a, Pxrand([0.25, 0.5, 0.25, 0.125],inf),
-			\param_b, Pxrand([0.25, 2, 0.5, 0.25],inf),
-			\amp, Prand([0.75,0.5,0.25],inf)/4,
-			\dur, Pfunc({~henonC_durData = ~kick_durData })/1.5,
-			\sustain, Pkey(\dur)*0.5,
-			\OSC_Sender, Pfunc({m.sendMsg("/event/henonC", ~henonC_durData);})
-			)
-			);*/
+
+			Pdef(\CellularAutomatonSynth,
+				Pbind(
+					\instrument, \cellSynth,
+					\freq, Pxrand([12, 24, 36, 48], inf),
+					\dur, Pseq([3.125, 0.625, 3.25, 0.5, 0.5], inf),
+					\amp, Pseq([0, 0.25, 0, 0.25, 0], inf),
+					\sustain, Pkey(\dur),
+					\modFreq,  Pxrand([0.0625, 0.125, 0.25, 0.5, 1, 2],inf),
+					\modWidth, Pxrand([0.0625, 0.125, 0.25, 0.5, 1, 2],inf)
+			)).play(~tempoClock);
+			Pdef(\reverb_sineWave,
+				Pbind(\instrument, \sin,
+					\out, [0, 41],
+					\rel, 0.125,
+					\freq, 81,
+					\dur, Pseq([2.375, 29.625],inf),
+					\sustain, 0.0625,
+					\amp, Pseq([0, 0.03125/2],inf)
+				)
+			).play(~tempoClock);
 			Pdef(\henonC,
 				Pbind(
 					\instrument, \henonC,
 					\freq, Pfunc({84}),
-					\param_a, Pxrand([1, 0.5, 0.25, 2],inf),
-					\param_b, Pxrand([0.25, 2, 0.5, 1],inf),
-					\amp, Prand([0.75,0.5,0.25],inf)/4,
+					\param_a, Pxrand([1, 0.5, 0.25, 1],inf),
+					\param_b, Pxrand([0.25, 1, 0.5, 1],inf),
+					\amp, Prand([0.5,0.25],inf)/4,
 					\dur, Pfunc({~henonC_durData = ~kick_durData }),
 					\sustain, Pkey(\dur)-(Pkey(\dur)*0.25),
 					\OSC_Sender, Pfunc({m.sendMsg("/event/sine",  ~henonC_durData);})
@@ -481,7 +524,7 @@ Task({
 					\out, 0,
 					\dur, Pfunc({~kick_durData = ~kick_durSeqStream.next}),
 					\amp,0,
-
+					\rel, Pfunc({if(~kick_durData >= 0.25, 0.03125*2, 0.03125)}),
 					\OSC_Sender, Pfunc({m.sendMsg("/event/kick", ~kick_durData);})
 				)
 			);
@@ -510,9 +553,10 @@ Task({
 		});
 		if(measureSelectNum == 65 && countNum == 0, {
 			Pdef(\noise_inst).stop;
+			Pdef(\CellularAutomatonSynth).stop;
 
-			~click_durSeqStream = Prand([Pn(0.25, Prand([2, 4], 1)),Pn(0.125,Prand([2, 4], 1))],inf).asStream;
-
+			//~click_durSeqStream = Prand([Pn(0.25, Prand([2, 4], 1)),Pn(0.125,Prand([2, 4], 1))],inf).asStream;
+			~click_durSeqStream = Pxrand([Pseq([Pn(0.25, 2), Prand([Pn(0.125, 4)], 1)], 1), Pn(0.25, 4), Pn(0.125, 8)],inf).asStream;
 			Pdef(\snare_2,
 				Pbind(\instrument,\click_2,
 					\out, 0,
@@ -524,13 +568,15 @@ Task({
 					\OSC_Sender, Pfunc({m.sendMsg("/event/click", ~click_durData);})
 			)).play(~tempoClock);
 			Pdef(\sineBass).stop;
+			Pdef(\reverb_sineWave).stop;
+
 			Pdef(\henonC,
 				Pbind(
 					\instrument, \henonC,
 					\freq, Pfunc({96}),
 					\param_a, Pxrand([0.25, 0.5, 0.25, 0.125],inf),
-					\param_b, Pxrand([0.25, 2, 0.5, 0.25],inf),
-					\amp, Prand([0.75,0.5,0.25],inf)/4,
+					\param_b, Pxrand([0.25, 1, 0.5, 0.25],inf),
+					\amp, Prand([0.5,0.25],inf)/4,
 					\dur, Pfunc({~henonC_durData = ~kick_durData })/1.5,
 					\sustain, Pkey(\dur)*0.5,
 					\OSC_Sender, Pfunc({m.sendMsg("/event/henonC", ~henonC_durData);})
@@ -541,7 +587,7 @@ Task({
 					\out, 0,
 					\dur, Pfunc({~kick_durData = ~kick_durSeqStream.next}),
 					\amp,0,
-
+					\rel, Pfunc({if(~kick_durData >= 0.25, 0.03125*2, 0.03125)}),
 					\OSC_Sender, Pfunc({m.sendMsg("/event/kick", ~kick_durData);})
 				)
 			);
@@ -567,15 +613,16 @@ Task({
 				Pbind(\instrument,\click_2,
 					\out, 0,
 					\room,Pxrand([0.125,0.25, 0.5, 0.75],inf),
-					\dur,0.125,
+					\dur,Pn(Penv([0.125, 0.125/16], [16], -0.5)),
 					\gate,1,
-					\amp,Prand([0.75,0.5,0.25],inf),
+					\amp,Prand([0.5,0.5,0.375],inf),
 					\sustain,Pkey(\dur)-(Pkey(\dur)/1.5),
 
 			)).play(~tempoClock);
 
 
 		});
+
 		if(measureSelectNum == 73 && countNum == 0, {
 
 			Pdef(\henonC).stop;

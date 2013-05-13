@@ -2,14 +2,16 @@
 s.latency = 0.03;
 //Interface Setting
 //Server.internal.options.device =  "Fireface UFX (23208981)";
-Server.internal.options.device =  "Soundflower (64ch)";
+//Server.internal.options.device =  "Soundflower (64ch)";
 Server.internal.options.sampleRate = 96000;
 
 //OSC Setting
 
 m = NetAddr("localhost", 7771); //Sender OSC POrt
-
+~noteScoreIP = NetAddr("localhost", 7773);
 //stop pattern
+Pdef(\CellularAutomatonSynth).stop;
+Pdef(\reverb_sineWave).stop;
 
 Pdef(\pulseSegment_inst).stop;
 Pdef(\noise_inst).stop;

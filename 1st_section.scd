@@ -29,18 +29,28 @@ Task({
 			{
 				measureSelectNum = measureSelectNum  + 1;
 				("measure : "++ measureSelectNum).postln;
+				//~update.try;
 
 			}
 		);
 
-		//if(measureSelectNum <= 193 && countNum == 0, m.sendMsg("/event/reset", 1));
+		//if(measureSelectNum <= 193 && countNum == 0, ~noteScoreIP.sendMsg("/event/reset", 1));
 
 		("count : "++ countNum).postln;
 
 
 
 		if(measureSelectNum == 1 && countNum == 0, {
-			m.sendMsg("/start", 1);
+			//sine pattern set
+			~sine_freqSeqStream = Pxrand([108,115,108], inf).asStream;
+			~sine_durSeqStream = Pxrand([Pn(0.125, 6), Pseq([0.125, 0.25, 0.5, 0.125], 1),Pseq([0.125, 0.25, 0.25, 0.125], 1), Pseq([Pn(0.125, 4), Pn(0.25, 2), Pseq([0.125, Pn(0.25,2)], 1)], 1)], inf).asStream;
+
+			//click pattern set
+			~click_durSeqStream = Prand([0.5,Pn(0.25,4)],inf).asStream;
+
+			//kick pattern set
+			~kick_durSeqStream = Pstutter(2, Pseq([set_1, set_2,set_3, set_4, set_5, set_1, set_2,set_3],inf) ).asStream;
+			~noteScoreIP.sendMsg("/start", 1);
 
 			Pdef(\sine, Pbind(
 				\instrument, \saw,
@@ -50,7 +60,7 @@ Task({
 				\freq, Pfunc({~sine_freqData = ~sine_freqSeqStream.next; }),
 				\dur, Pfunc({~sine_durData = ~sine_durSeqStream.next; }),
 				\sustain, Pkey(\dur)/1.125,
-				\OSC_Sender, Pfunc({m.sendMsg("/event/sine", ~sine_durData);})
+				\OSC_Sender, Pfunc({~noteScoreIP.sendMsg("/event/sine", ~sine_durData);})
 			)).play(~tempoClock);
 		});
 
@@ -64,7 +74,7 @@ Task({
 				\freq, Pfunc({~sine_freqData = ~sine_freqSeqStream.next; }),
 				\dur, Pfunc({~sine_durData = ~sine_durSeqStream.next; }),
 				\sustain, Pkey(\dur)/1.125,
-				\OSC_Sender, Pfunc({m.sendMsg("/event/sine", ~sine_durData);})
+				\OSC_Sender, Pfunc({~noteScoreIP.sendMsg("/event/sine", ~sine_durData);})
 			)).play(~tempoClock);
 
 			}
@@ -72,7 +82,7 @@ Task({
 
 		if(measureSelectNum == 3 && countNum == 0, {
 
-			~sine_durSeqStream = Pxrand([Pn(0.125, 6), Pseq([0.125, 0.25, 0.5, 0.125], 1),Pseq([0.125, 0.25, 0.25, 0.125], 1)], inf).asStream;
+			~sine_durSeqStream = Pxrand([Pn(0.125, 6), Pseq([0.125, 0.25, 0.5, 0.125], 1),Pseq([0.125, 0.25, 0.25, 0.125], 1), Pseq([Pn(0.125, 4), Pn(0.25, 2), Pseq([0.125, Pn(0.25,2)], 1)], 1)], inf).asStream;
 			Pdef(\sine, Pbind(
 				\instrument, \saw,
 				\sampleRate, 0.5,
@@ -80,7 +90,7 @@ Task({
 				\freq, Pfunc({~sine_freqData = ~sine_freqSeqStream.next; }),
 				\dur, Pfunc({~sine_durData = ~sine_durSeqStream.next; }),
 				\sustain, Pkey(\dur)/1.5,
-				\OSC_Sender, Pfunc({m.sendMsg("/event/sine", ~sine_durData);})
+				\OSC_Sender, Pfunc({~noteScoreIP.sendMsg("/event/sine", ~sine_durData);})
 			)).play(~tempoClock);
 			//Click Start
 			Pdef(\snare,
@@ -91,7 +101,7 @@ Task({
 					\gate,1,
 					\amp,Prand([0.75,0.5,0.25],inf)/2,
 					\sustain,Pkey(\dur)-(Pkey(\dur)/1.5),
-					\OSC_Sender, Pfunc({m.sendMsg("/event/click", ~click_durData);})
+					\OSC_Sender, Pfunc({~noteScoreIP.sendMsg("/event/click", ~click_durData);})
 			)).play(~tempoClock);
 
 		});
@@ -100,7 +110,7 @@ Task({
 			~kick_durSeqStream = Pseq([set_1, 8 - set_1],inf).asStream;
 			Pdef(\kick, Pbind(\instrument, \kick, \amp, 1,\dur,Pfunc({~kick_durData = ~kick_durSeqStream.next; }),
 				\osc, Pfunc({arg env;
-				m.sendMsg("/event/kick", ~kick_durData);
+					~noteScoreIP.sendMsg("/event/kick", ~kick_durData);
 			}))).play(~tempoClock);
 			Pdef(\sineBass, Pbind(\instrument, \sin, \freq, 36, \dur, 4, \sustain, 4, \amp, 0.125)).play(~tempoClock);
 		});
@@ -108,7 +118,7 @@ Task({
 			~kick_durSeqStream = Pseq([set_1, set_2, 8 - set_1 - set_2],inf).asStream;
 			Pdef(\kick, Pbind(\instrument, \kick, \amp, 1,\dur,Pfunc({~kick_durData = ~kick_durSeqStream.next; }),
 				\OSC_Sender, Pfunc({
-				m.sendMsg("/event/kick", ~kick_durData);
+					~noteScoreIP.sendMsg("/event/kick", ~kick_durData);
 			}))).play(~tempoClock);
 		});
 		if(measureSelectNum == 11 && countNum == 0, {
@@ -118,19 +128,19 @@ Task({
 				\bitRate, 32,
 				\dur, Pfunc({~sine_durData = ~sine_durSeqStream.next; }),
 				\sustain, Pkey(\dur)/1.5,
-				\OSC_Sender, Pfunc({m.sendMsg("/event/sine", ~sine_durData);})
+				\OSC_Sender, Pfunc({~noteScoreIP.sendMsg("/event/sine", ~sine_durData);})
 			));
 			~kick_durSeqStream = Pseq([set_1, set_2, set_3, 8 - set_1 - set_2 - set_3],inf).asStream;
 			Pdef(\kick, Pbind(\instrument, \kick, \amp, 1,\dur, Pfunc({~kick_durData = ~kick_durSeqStream.next; }),
 				\OSC_Sender, Pfunc({
-				m.sendMsg("/event/kick", ~kick_durData);
+					~noteScoreIP.sendMsg("/event/kick", ~kick_durData);
 			}))).play(~tempoClock);
 		});
 		if(measureSelectNum == 13 && countNum == 0, {
 			~kick_durSeqStream = Pseq([set_1, set_2, set_3, set_4, 8 - set_1 - set_2 - set_3 - set_4],inf).asStream;
 			Pdef(\kick, Pbind(\instrument, \kick, \amp, 1,\dur,Pfunc({~kick_durData = ~kick_durSeqStream.next; }),
 				\OSC_Sender, Pfunc({
-				m.sendMsg("/event/kick", ~kick_durData);
+					~noteScoreIP.sendMsg("/event/kick", ~kick_durData);
 			}))).play(~tempoClock);
 		});
 		if(measureSelectNum == 15 && countNum == 0, {
@@ -139,20 +149,20 @@ Task({
 				\dur, Pfunc({~sine2_durData = ~sine_durSeqStream.next; }),
 				\sustain, Pkey(\dur)/1.5,
 				\panPos, -1,
-				\OSC_Sender, Pfunc({m.sendMsg("/event/sine", ~sine_durData);})
+				\OSC_Sender, Pfunc({~noteScoreIP.sendMsg("/event/sine", ~sine_durData);})
 			));
 
 			Pdef(\sine_2, Pbind(\instrument, \saw, \freq, Pfunc({~sine2_freqData = ~sine_freqSeqStream.next; }),
 				\dur, Pfunc({~sine2_durData = ~sine_durSeqStream.next; }),
 				\sustain, Pkey(\dur)/1.5,
 				\panPos, 1,
-				\OSC_Sender, Pfunc({m.sendMsg("/event/sine_2", ~sine_durData);})
+				\OSC_Sender, Pfunc({~noteScoreIP.sendMsg("/event/sine_2", ~sine_durData);})
 			)).play(~tempoClock);
 
 			~kick_durSeqStream = Pseq([set_1, set_2, set_3, set_4, 8 - set_1 - set_2 - set_3 - set_4],inf).asStream;
 			Pdef(\kick, Pbind(\instrument, \kick, \amp, 1,\dur, Pfunc({~kick_durData = ~kick_durSeqStream.next; }),
 				\OSC_Sender, Pfunc({
-				m.sendMsg("/event/kick", ~kick_durData);
+					~noteScoreIP.sendMsg("/event/kick", ~kick_durData);
 			}))).play(~tempoClock);
 		});
 
@@ -161,8 +171,9 @@ Task({
 			Pdef(\kick,
 				Pbind(\instrument, \kick, \amp, 1,
 					\dur, Pfunc({~kick_durData = ~kick_durSeqStream.next; }),
+					\rel, Pfunc({if(~sine_durData >= 0.25, 0.0625, 0.03125)}),
 					\OSC_Sender, Pfunc({
-						m.sendMsg("/event/kick", ~kick_durData);
+						~noteScoreIP.sendMsg("/event/kick", ~kick_durData);
 					})
 			)).play(~tempoClock);
 		});
@@ -181,7 +192,7 @@ Task({
 				\dur, Pfunc({~sine_durData = ~sine_durSeqStream.next; }),
 				\sustain, Pkey(\dur)/1.125,
 				\panPos, 0,
-				\OSC_Sender, Pfunc({m.sendMsg("/event/sine", ~sine_durData);})
+				\OSC_Sender, Pfunc({~noteScoreIP.sendMsg("/event/sine", ~sine_durData);})
 			));
 
 			Pdef(\whiteNoise, Pbind(\instrument, \whiteNoise, \amp, 0.25,\dur,4, \sustain, Pkey(\dur))).play(~tempoClock);
@@ -189,14 +200,15 @@ Task({
 		});
 		//
 		if(measureSelectNum == 19 && countNum == 0, {
+			~noteScoreIP.sendMsg("/event/mode", 1); ////////////
 			Pdef(\whiteNoise).stop;
-			~sine_durSeqStream = Pxrand([Pn(0.125, 6), Pseq([0.125, 0.25, 0.5, 0.125], 1),Pseq([0.125, 0.25, 0.25, 0.125], 1)], inf).asStream;
+			~sine_durSeqStream = Pxrand([Pn(0.125, 6), Pseq([0.125, 0.25, 0.5, 0.125], 1),Pseq([0.125, 0.25, 0.25, 0.125], 1), Pseq([Pn(0.125, 4), Pn(0.25, 2), Pseq([0.125, Pn(0.25,2)], 1)], 1)], inf).asStream;
 			Pdef(\sine, Pbind(
 				\instrument, \saw,
 				\freq, Pfunc({~sine_freqData = ~sine_freqSeqStream.next; }),
 				\dur, Pfunc({~sine_durData = ~sine_durSeqStream.next; }),
 				\sustain, Pkey(\dur)/1.5,
-				\OSC_Sender, Pfunc({m.sendMsg("/event/sine", ~sine_durData);})
+				\OSC_Sender, Pfunc({~noteScoreIP.sendMsg("/event/sine", ~sine_durData);})
 			)).play(~tempoClock);
 
 			Pdef(\kick,
@@ -207,7 +219,8 @@ Task({
 					}),
 					\amp,Pfunc({if(~sine_durData >= 0.5, 0, 1)}),
 					//\dur,Pfunc({~kick_durData = ~kick_freqSeqStream.next}),
-					\OSC_Sender, Pfunc({m.sendMsg("/event/kick", ~kick_durData = ~sine_durData);})
+					\rel, Pfunc({if(~sine_durData >= 0.25, 0.0625, 0.03125)}),
+					\OSC_Sender, Pfunc({~noteScoreIP.sendMsg("/event/kick", ~kick_durData = ~sine_durData);})
 				)
 			).play(~tempoClock);
 		});
@@ -222,19 +235,23 @@ Task({
 				\freq, 36,
 				\dur, Pfunc({~sine_durData = ~sine_durSeqStream.next; }),
 				\sustain, Pkey(\dur),
-				\OSC_Sender, Pfunc({m.sendMsg("/event/sine", ~sine_durData);})
+				\OSC_Sender, Pfunc({~noteScoreIP.sendMsg("/event/sine", ~sine_durData);})
 			)).play(~tempoClock);
 		});
 
 		if(measureSelectNum == 27 && countNum == 0, {
+
+
 			Pdef(\whiteNoise).stop;
-			~sine_durSeqStream = Pxrand([Pn(0.125, 6), Pseq([0.125, 0.25, 0.5, 0.125], 1),Pseq([0.125, 0.25, 0.25, 0.125], 1)], inf).asStream;
+			Pdef(\kick).reset;
+			Pdef(\sine).reset;
+			~sine_durSeqStream = Pxrand([Pn(0.125, 6), Pseq([0.125, 0.25, 0.5, 0.125], 1),Pseq([0.125, 0.25, 0.25, 0.125], 1), Pseq([Pn(0.125, 4), Pn(0.25, 2), Pseq([0.125, Pn(0.25,2)], 1)], 1)], inf).asStream;
 			Pdef(\sine, Pbind(
 				\instrument, \saw,
 				\freq, Pfunc({~sine_freqData = ~sine_freqSeqStream.next; }),
 				\dur, Pfunc({~sine_durData = ~sine_durSeqStream.next; }),
 				\sustain, Pkey(\dur)/1.5,
-				\OSC_Sender, Pfunc({m.sendMsg("/event/sine", ~sine_durData);})
+				\OSC_Sender, Pfunc({~noteScoreIP.sendMsg("/event/sine", ~sine_durData);})
 			)).play(~tempoClock);
 
 			Pdef(\snare,
@@ -245,7 +262,7 @@ Task({
 					\gate,1,
 					\amp,Prand([0.75,0.5,0.25],inf)/2,
 					\sustain,Pkey(\dur)-(Pkey(\dur)/1.5),
-					\OSC_Sender, Pfunc({m.sendMsg("/event/click", ~click_durData);})
+					\OSC_Sender, Pfunc({~noteScoreIP.sendMsg("/event/click", ~click_durData);})
 			)).play(~tempoClock);
 
 			Pdef(\kick,
@@ -254,8 +271,9 @@ Task({
 					\dur,Pfunc({
 						~sine_durData;
 					}),
+					\rel, Pfunc({if(~sine_durData >= 0.25, 0.0625, 0.03125)}),
 					\amp,Pfunc({if(~sine_durData >= 0.5, 0, 1)}),
-					\OSC_Sender, Pfunc({m.sendMsg("/event/kick", ~kick_durData = ~sine_durData );})
+					\OSC_Sender, Pfunc({~noteScoreIP.sendMsg("/event/kick", ~kick_durData = ~sine_durData );})
 				)
 			).play(~tempoClock);
 
@@ -271,9 +289,9 @@ Task({
 					}),
 					\amp,Pfunc({if(~sine_durData == 0.5, 0.125, 0.125/2)}),
 					\freq,Pfunc({if(~sine_durData == 0.5, 33, 48)}),
-					\sustain,Pkey(\dur)-(Pkey(\dur)*0.25),
+					\sustain,Pkey(\dur)-(Pkey(\dur)*0.333),
 					//\dur,Pfunc({~kick_durData = ~kick_freqSeqStream.next}),
-					\OSC_Sender, Pfunc({m.sendMsg("/event/logisticMap", ~logisticMapBass_durData);})
+					\OSC_Sender, Pfunc({~noteScoreIP.sendMsg("/event/logisticMap", ~logisticMapBass_durData);})
 				)
 			).play(~tempoClock);
 
@@ -286,15 +304,15 @@ Task({
 						~sineBass_durData = ~sine_durData;
 					}),
 					\amp, Pfunc({if(~sineBass_durData ==1.5, 0, 0.5)})/4,
-					\sustain,Pkey(\dur)-(Pkey(\dur)*0.25),
-					\OSC_Sender, Pfunc({m.sendMsg("/event/sineBass", ~sineBass_durData);})
+					\sustain,Pkey(\dur)-(Pkey(\dur)*0.333),
+					\OSC_Sender, Pfunc({~noteScoreIP.sendMsg("/event/sineBass", ~sineBass_durData);})
 				)
 			).play(~tempoClock);
 
 		});
 		if(measureSelectNum == 31 && countNum == 0, {
 
-			~sine_durSeqStream = Pxrand([Pn(0.125, 6), Pseq([0.125, 0.25, 0.5, 0.125], 1),Pseq([0.125, 0.25, 0.25, 0.125], 1)], inf).asStream;
+			~sine_durSeqStream = Pxrand([Pn(0.125, 6), Pseq([0.125, 0.25, 0.5, 0.125], 1),Pseq([0.125, 0.25, 0.25, 0.125], 1), Pseq([Pn(0.125, 4), Pn(0.25, 2), Pseq([0.125, Pn(0.25,2)], 1)], 1)], inf).asStream;
 
 			Pdef(\logisticMapBass,
 				Pbind(\instrument, \logisticMap_Bass,
@@ -309,9 +327,9 @@ Task({
 					\amp,Pfunc({if(~sine_durData == 0.5, 0.125, 0.125/2)}),
 					\freq,Pfunc({if(~sine_durData == 0.5, 33, 48)}),
 					\logiFreq, Pkey(\freq)*Pseq([8, 16, 32],inf),
-					\sustain,Pkey(\dur)-(Pkey(\dur)*0.25),
+					\sustain,Pkey(\dur)-(Pkey(\dur)*0.333),
 					//\dur,Pfunc({~kick_durData = ~kick_freqSeqStream.next}),
-					\OSC_Sender, Pfunc({m.sendMsg("/event/logisticMap", ~logisticMapBass_durData);})
+					\OSC_Sender, Pfunc({~noteScoreIP.sendMsg("/event/logisticMap", ~logisticMapBass_durData);})
 				)
 			).play(~tempoClock);
 
@@ -324,8 +342,8 @@ Task({
 						~sineBass_durData = ~sine_durData;
 					}),
 					\amp, Pfunc({if(~sineBass_durData ==1.5, 0, 0.5)})/4,
-					\sustain,Pkey(\dur)-(Pkey(\dur)*0.25),
-					\OSC_Sender, Pfunc({m.sendMsg("/event/sineBass", ~sineBass_durData);})
+					\sustain,Pkey(\dur)-(Pkey(\dur)*0.333),
+					\OSC_Sender, Pfunc({~noteScoreIP.sendMsg("/event/sineBass", ~sineBass_durData);})
 				)
 			).play(~tempoClock);
 
@@ -349,7 +367,10 @@ Task({
 				[
 					Pn(0.125, 6),
 					Pseq([0.125, 0.25, Pn(0.125, 3)],1),
-					Pseq([0.125, 0.25, Pn(0.125, 3)], 1)
+					Pseq([0.125, 0.25, Pn(0.125, 3)], 1),
+					Pseq([0.25, 0.125, Pn(0.125, 3)], 1),
+					Pseq([0.25, Pn(0.125, 4), 0.25], 1)
+
 			], inf).asStream;
 
 			Pdef(\sine, Pbind(
@@ -358,14 +379,14 @@ Task({
 				\dur, Pfunc({~sine_durData = ~sine_durSeqStream.next; }),
 				\sustain, Pkey(\dur)/1.5,
 				\panPos, -1,
-				\OSC_Sender, Pfunc({m.sendMsg("/event/sine", ~sine_durData);})
+				\OSC_Sender, Pfunc({~noteScoreIP.sendMsg("/event/sine", ~sine_durData);})
 			)).play(~tempoClock);
 
 			Pdef(\sine_2, Pbind(\instrument, \saw, \freq, Pfunc({~sine2_freqData = ~sine_freqSeqStream.next; }),
 				\dur, Pfunc({~sine2_durData = ~sine_durSeqStream.next; }),
 				\sustain, Pkey(\dur)/1.5,
 				\panPos, 1,
-				\OSC_Sender, Pfunc({m.sendMsg("/event/sine_2", ~sine2_durData);})
+				\OSC_Sender, Pfunc({~noteScoreIP.sendMsg("/event/sine_2", ~sine2_durData);})
 			)).play(~tempoClock);
 
 			~click_durSeqStream = Prand([0.5,Pn(0.25,4)],inf).asStream;
@@ -376,7 +397,7 @@ Task({
 					\gate,1,
 					\amp,Prand([0.75,0.5,0.25],inf)/2,
 					\sustain,Pkey(\dur)-(Pkey(\dur)/1.5),
-					\OSC_Sender, Pfunc({m.sendMsg("/event/click", ~click_durData);})
+					\OSC_Sender, Pfunc({~noteScoreIP.sendMsg("/event/click", ~click_durData);})
 			));
 
 			Pdef(\logisticMapBass,
@@ -392,8 +413,8 @@ Task({
 					\amp,0.125/2,
 					\freq,Pfunc({if(~sine_durData == 0.5, 33, 48)}),
 					\logiFreq, Pkey(\freq)*Pseq([8, 16, 32],inf),
-					\sustain,Pkey(\dur)-(Pkey(\dur)*0.25),
-					\OSC_Sender, Pfunc({m.sendMsg("/event/logisticMap", ~logisticMapBass_durData);})
+					\sustain,Pkey(\dur)-(Pkey(\dur)*0.333),
+					\OSC_Sender, Pfunc({~noteScoreIP.sendMsg("/event/logisticMap", ~logisticMapBass_durData);})
 				)
 			).play(~tempoClock);
 
@@ -405,8 +426,8 @@ Task({
 						~sineBass_durData = ~sine_durData;
 					}),
 					\amp, Pfunc({if(~sineBass_durData ==1.5, 0, 0.5)})/4,
-					\sustain,Pkey(\dur)-(Pkey(\dur)*0.25),
-					\OSC_Sender, Pfunc({m.sendMsg("/event/sineBass", ~sineBass_durData);})
+					\sustain,Pkey(\dur)-(Pkey(\dur)*0.333),
+					\OSC_Sender, Pfunc({~noteScoreIP.sendMsg("/event/sineBass", ~sineBass_durData);})
 				)
 			)
 		});
@@ -422,12 +443,28 @@ Task({
 					\sustain, Pkey(\dur)/2
 				)
 			).play(~tempoClock);
+			/////////////////////////////////////////////////
+			~chaosRand = Array.fill(16, (0.002.rand)+ 3.8282);
+			Pdef(\logisticMap_Synth,
+				Pbind(\instrument, \logisticMap_Synth,
+					\chaos, Pseq([Pn(Penv([3.8282, 3.83], [16], -1)), Pxrand(~chaosRand, inf)], inf),
+					\atk, 0.01,
+					\rel, 0.01,
+					\logiFreq, Prand([30000, 30000/1.5,30000*1.5],inf),
+					\dur, Pfunc({
+						~sine_durData/2;
+					}),
+					\sustain, Pkey(\dur),
+					\amp, 0.125,
+				)
+			).play(~tempoClock);
 
 		});
 
 		if(measureSelectNum == 43 && countNum == 0, {
 
 			var break = 1;
+			Pdef(\logisticMap_Synth).stop;
 			Pdef(\whiteNoise).stop;
 			Pdef(\sine_2).stop;
 			Pdef(\snare).stop;
@@ -439,7 +476,7 @@ Task({
 				\dur, Pfunc({~sine_durData = ~sine_durSeqStream.next; }),
 				\sustain, Pkey(\dur)/1.5,
 				\panPos, 0,
-				\OSC_Sender, Pfunc({m.sendMsg("/event/sine", ~sine_durData);})
+				\OSC_Sender, Pfunc({~noteScoreIP.sendMsg("/event/sine", ~sine_durData);})
 
 			)).play(~tempoClock);
 
@@ -448,10 +485,11 @@ Task({
 					\dur,Pfunc({
 						~sine_durData;
 					}),
+					\rel, Pfunc({if(~sine_durData >= 0.25, 0.0625, 0.03125)}),
 					\amp,Pfunc({
 						if(~sine_durData >= 0.5, 0, 1);
 					}),
-					\OSC_Sender, Pfunc({m.sendMsg("/event/kick", ~kick_durData = ~sine_durData);})
+					\OSC_Sender, Pfunc({~noteScoreIP.sendMsg("/event/kick", ~kick_durData = ~sine_durData);})
 				)
 			).play(~tempoClock);
 
@@ -470,8 +508,8 @@ Task({
 					}),
 					\freq,Pfunc({if(~sine_durData == 0.5, 33, 48)}),
 					\logiFreq, Pkey(\freq)*Pseq([8, 16, 32],inf),
-					\sustain,Pkey(\dur)-(Pkey(\dur)*0.25),
-					\OSC_Sender, Pfunc({m.sendMsg("/event/logisticMap", ~logisticMapBass_durData);})
+					\sustain,Pkey(\dur)-(Pkey(\dur)*0.333),
+					\OSC_Sender, Pfunc({~noteScoreIP.sendMsg("/event/logisticMap", ~logisticMapBass_durData);})
 				)
 			).play(~tempoClock);
 			Pdef(\sineBass,
@@ -480,13 +518,13 @@ Task({
 					\freq,Pfunc({if(~sine_durData == 0.5, 33, 48)})-12,
 
 					\dur,Pfunc({
-						~sineBass_durData = ~sine_durData;
+						~sineBass_durData = ~logisticMapBass_durData;
 					}),
 					\amp, Pfunc({
 						if(~sine_durData == break, 0, 0.125/2)/4;
 					}),
-					\sustain,Pkey(\dur)-(Pkey(\dur)*0.25),
-					\OSC_Sender, Pfunc({m.sendMsg("/event/sineBass", ~sineBass_durData);})
+					\sustain,Pkey(\dur)-(Pkey(\dur)*0.333),
+					\OSC_Sender, Pfunc({~noteScoreIP.sendMsg("/event/sineBass", ~sineBass_durData);})
 				)
 			)
 		});
@@ -503,6 +541,7 @@ Task({
 			Pdef(\kick).stop;
 			Pdef(\logisticMapBass).stop;
 			Pdef(\snare).stop;
+			Synth(\kick);
 			Pdef(\logisticMap_Synth,
 				Pbind(\instrument, \logisticMap_Synth,
 					\chaos,Pn(Penv([3.5, 3.95], [8], -2)),
@@ -520,7 +559,7 @@ Task({
 				\freq, 60,
 				\dur, Pfunc({~sine_durData = ~sine_durSeqStream.next; }),
 				\sustain, Pkey(\dur),
-				\OSC_Sender, Pfunc({m.sendMsg("/event/sine", ~sine_durData);})
+				\OSC_Sender, Pfunc({~noteScoreIP.sendMsg("/event/sine", ~sine_durData);})
 			)).play(~tempoClock);
 		});
 

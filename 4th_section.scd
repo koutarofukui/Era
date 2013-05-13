@@ -30,11 +30,13 @@ Task({
 
 //193
 		if(measureSelectNum == 1 && countNum == 0, {
-
+			~loop_SinewaveSeq = Pseq([Pn(72, 3),Pn(79, 3)],inf);
+			~rand_SinewaveSeq = Prand([Pseq([Pn(72, 3),Pn(79, 3)],1), Pseq([Pn(72, 1), Pn(79, 2)],1), Pseq([Pn(72, 2), Pn(79, 1)],1)], inf);
 			Pdef(\sineWave,
 				Pbind(
 					\instrument, \sineWave,
 					\midinote, Pseq([Pn(72, 3),Pn(79, 3)],inf) + 0,
+					\midinote, Prand([Pseq([Pn(72, 3),Pn(79, 3)],1), Pseq([Pn(72, 1), Pn(79, 2)],1)], inf) + 0,
 					\dur, Pseq([Pn(0.25, 2), 0.5, Pn(0.25, 4) ],inf),
 					\amp, Pn(Penv([0.0625, 0.25],[16],-3)),
 					\sustain, Pkey(\dur)/1.5
@@ -75,8 +77,8 @@ Task({
 			~sourceOsc = Synth.before(1, \phasorNoise);
 			~sourceOsc.set(\out, 37);
 
-			~stutterOSc = Synth.before(1, \stutter);
-			~stutterOSc.set(\out, [39, 40]);
+			~stutterOsc = Synth.before(1, \stutter);
+			~stutterOsc.set(\out, 39);
 
 
 			/////////
@@ -89,17 +91,15 @@ Task({
 			~snareSeq_3 = Pseq([0.25,0.25,Pn(0.25, 2),Pseq([Pn(0.25, 4),Pn(Pseq([0.5,0.25,0.25],1),3),], 3), Pn(0.25,8)],inf);
 			~snareSeq_Length_3 = Pseq([0.125,0.125,Pn(0.125,2),Pseq([Pn(0.125, 4),Pn(Pseq([0.375,0.125,0.125],1),3),], 3), Pn(0.125, 8)],inf);
 
-
 			~snare_data_dur = [~snareSeq_1, ~snareSeq_2, ~snareSeq_3];
 			~snare_data_length = [~snareSeq_Length_1, ~snareSeq_Length_2,~snareSeq_Length_3];
-
 
 			~tempoClock = TempoClock(180/60);
 
 			Pdef(\sineWave,
 				Pbind(
 					\instrument, \sineWave,
-					\midinote, Pseq([Pn(72, 3),Pn(79, 3)],inf) + 0,
+					\midinote, ~rand_SinewaveSeq + 0,
 					\dur, Pseq([Pn(0.25, 2), 0.5, Pn(0.25, 4) ],inf),
 					\amp, 0.25,
 					\sustain, Pkey(\dur)/1.5
@@ -121,10 +121,12 @@ Task({
 
 				)
 			).play(~tempoClock);
+
 			Pdef(\kick,
 				Pbind(\instrument, \kick,
 					\choice, Prand([Pseq(~thirdPart_indices, 1), Pseq(~thirdPart_indices.reverse, 1)], inf),
 					\dur, Pindex(~kick_data_dur, Pkey(\choice),inf),
+					\rel,Pkey(\dur)/16 + 0.03125,
 					\amp,0.5,
 				)
 			).play(~tempoClock);
@@ -133,7 +135,7 @@ Task({
 				Pbind(
 					\instrument, \envelopeGen,
 					\group, 1,
-					\outBus, [39, 40],
+					\outBus, 39,
 					\choice, Prand([Pseq(~thirdPart_snareIndices, 1), Pseq(~thirdPart_snareIndices.reverse, 1)], inf),
 					\dur, Pindex(~snare_data_dur,Pkey(\choice), inf),
 
@@ -194,7 +196,7 @@ Task({
 				Pbind(
 					\instrument, \envelopeGen,
 					\group, 1,
-					\outBus, [39, 40],
+					\outBus, 39,
 					\choice, Prand([Pseq(~thirdPart_snareIndices, 1), Pseq(~thirdPart_snareIndices.reverse, 1)], inf),
 					\dur, Pindex(~snare_data_dur,Pkey(\choice), inf),
 
@@ -247,21 +249,14 @@ Task({
 			Pdef(\sineWave,
 				Pbind(
 					\instrument, \sineWave,
-					\midinote, Pseq([Pn(72, 3),Pn(79, 3)],inf) + 12,
+					\midinote, ~loop_SinewaveSeq + 12,
 					\dur, Pseq([Pn(0.25, 2), 0.5, Pn(0.25, 4) ],inf),
 					\amp, 0.4,
 					\sustain, Pkey(\dur)/1.5
 				)
 			).play(~tempoClock);
 
-			/*Pdef(\pulseSnare,
-			Pbind(
-			\instrument, \pulseSnare,
-			\dur, Pseq([1.5, 1.5, 4, Pn(0.25, 4),  1.5, Pn(0.25, 6), 3.5, Pn(0.5, 3),  1.5, Pn(0.25, 6), 3.5, Pn(0.25, 6)],inf),
-			\amp, 0.75,
-			\sustain, Pkey(\dur)/3
-			)
-			).play(~tempoClock);*/
+
 
 		});
 		if(measureSelectNum == 15 && countNum == 4, {
@@ -281,7 +276,6 @@ Task({
 			).play(~tempoClock);
 			Pdef(\kick,
 				Pbind(\instrument, \kick,
-
 					\dur, Pn(0.5, 13),//check
 					\amp,0.5,
 				)
@@ -291,7 +285,7 @@ Task({
 				Pbind(
 					\instrument, \envelopeGen,
 					\group, 1,
-					\outBus, [39, 40],
+					\outBus, 39,
 					\choice, Prand([Pseq(~thirdPart_snareIndices, 1), Pseq(~thirdPart_snareIndices.reverse, 1)], inf),
 					\dur, Pindex(~snare_data_dur,Pkey(\choice), inf),
 
@@ -323,7 +317,7 @@ Task({
 			Pdef(\sineWave,
 				Pbind(
 					\instrument, \sineWave,
-					\midinote, Pseq([Pn(72, 3),Pn(79, 3)],inf) + 0,
+					\midinote, ~rand_SinewaveSeq + 0,
 					\dur, Pseq([Pn(0.25, 2), 0.5, Pn(0.25, 4) ],inf),
 					\amp, 0.4,
 					\sustain, Pkey(\dur)/1.5
@@ -369,7 +363,7 @@ Task({
 			Pdef(\sineWave,
 				Pbind(
 					\instrument, \sineWave,
-					\midinote, Pseq([Pn(72, 3),Pn(79, 3)],inf) + 12,
+					\midinote, ~rand_SinewaveSeq + 12,
 					\dur, Pseq([Pn(0.25, 2), 0.5, Pn(0.25, 4) ],inf),
 					\amp, 0.4,
 					\sustain, Pkey(\dur)/1.5
@@ -406,6 +400,7 @@ Task({
 				Pbind(\instrument, \kick,
 					\choice, Prand([Pseq(~thirdPart_indices, 1), Pseq(~thirdPart_indices.reverse, 1)], inf),
 					\dur, Pindex(~kick_data_dur, Pkey(\choice),inf),
+					\rel,Pkey(\dur)/16 + 0.03125,
 					\amp,0.5,
 				)
 			).play(~tempoClock);
@@ -442,7 +437,7 @@ Task({
 			Pdef(\sineWave,
 				Pbind(
 					\instrument, \sineWave,
-					\midinote, Pseq([Pn(72, 3),Pn(79, 3)],inf) + 24,
+					\midinote, ~rand_SinewaveSeq + 24,
 					\dur, Pseq([Pn(0.25, 2), 0.5, Pn(0.25, 4) ],inf),
 					\amp, 0.4,
 					\sustain, Pkey(\dur)/1.5
@@ -493,7 +488,7 @@ Task({
 			Pdef(\sineWave,
 				Pbind(
 					\instrument, \sineWave,
-					\midinote, Pseq([Pn(72, 3),Pn(79, 3)],inf) + 12,
+					\midinote, ~rand_SinewaveSeq + 12,
 					\dur, Pseq([Pn(0.25, 2), 0.5, Pn(0.25, 4) ],inf),
 					\amp, 0.4,
 					\sustain, Pkey(\dur)/1.5
@@ -541,7 +536,7 @@ Task({
 			Pdef(\sineWave_octave,
 				Pbind(
 					\instrument, \sineWave,
-					\midinote, Pseq([Pn(72, 3),Pn(79, 3)],inf) + 36,
+					\midinote, ~rand_SinewaveSeq + 36,
 					\dur, Pseq([Pn(0.25, 2), 0.5, Pn(0.25, 4) ],inf),
 					\amp, 0.4,
 					\sustain, Pkey(\dur)/1.5
@@ -577,6 +572,7 @@ Task({
 				Pbind(\instrument, \kick,
 					\choice, Prand([Pseq(~thirdPart_indices, 1), Pseq(~thirdPart_indices.reverse, 1)], inf),
 					\dur, Pindex(~kick_data_dur, Pkey(\choice),inf),
+					\rel,Pkey(\dur)/16 + 0.03125,
 					\amp,0.5,
 				)
 			).play(~tempoClock);
@@ -626,7 +622,7 @@ Task({
 				Pbind(
 					\instrument, \envelopeGen,
 					\group, 1,
-					\outBus, [39, 40],
+					\outBus, 39,
 					\choice, Prand([Pseq(~thirdPart_snareIndices, 1), Pseq(~thirdPart_snareIndices.reverse, 1)], inf),
 					\dur, Pindex(~snare_data_dur,Pkey(\choice), inf),
 
@@ -681,7 +677,7 @@ Task({
 				Pbind(
 					\instrument, \envelopeGen,
 					\group, 1,
-					\outBus, [39, 40],
+					\outBus, 39,
 					\choice, Prand([Pseq(~thirdPart_snareIndices, 1), Pseq(~thirdPart_snareIndices.reverse, 1)], inf),
 					\dur, Pindex(~snare_data_dur,Pkey(\choice), inf),
 
@@ -741,18 +737,18 @@ Task({
 
 				)
 			).play(~tempoClock);
-
+////////////////////////////////////////////////////////////////
 		});
 		if(measureSelectNum == 42 && countNum == 0, {
 
 			Pdef(\sineWave_octave,
 				Pbind(
 					\instrument, \sineWave,
-					\midinote, Pseq([Pn(72, 3),Pn(79, 3)],inf) + 36,
+					\midinote, ~rand_SinewaveSeq + 36,
 					\dur, Pn(Penv([0.25, 0.25/8],[64],0)),
 					\sampleRate, Pn(Penv([0.25, 0.25/8],[16],0)),
 					\bitRate, Pn(Penv([32, 1],[64],0)),
-					\amp, Pn(Penv([0.4, 0],[64],-4)),
+					\amp, Pn(Penv([0.4, 0],[96],-4)),
 					\sampleRate, Pn(Penv([1, 0.01],[64],0)),
 					\bitRate, Pn(Penv([32, 1],[64],0)),
 					\sustain, Pkey(\dur)/1.5
@@ -762,11 +758,11 @@ Task({
 			Pdef(\sineWave,
 				Pbind(
 					\instrument, \sineWave,
-					\midinote, Pseq([Pn(72, 3),Pn(79, 3)],inf) + 0,
+					\midinote, ~rand_SinewaveSeq + 0,
 					\dur, Pn(Penv([0.25, 0.25/8],[64],0)),
 					\sampleRate, Pn(Penv([1, 0.01],[64],0)),
 					\bitRate, Pn(Penv([32, 1],[64],0)),
-					\amp, Pn(Penv([0.4, 0],[64],-4)),
+					\amp, Pn(Penv([0.4, 0],[96],-4)),
 					\sustain, Pkey(\dur)/1.5
 				)
 			).play(~tempoClock);
@@ -788,7 +784,6 @@ Task({
 					\sustain, 0.125,
 					\rel, Pseq([Pn(0.001, 3), 0.01], 1),
 					\amp, 0.5,
-					//\dur, Pseq([Pn(1/4, 2),Pn(1/3, 2)], 1),
 					\dur, Pn(1/4,1),
 					\sustain, Pkey(\dur)/2,
 
@@ -796,7 +791,6 @@ Task({
 			).play(~tempoClock);
 
 		});
-
 
 
 		1.wait;

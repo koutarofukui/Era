@@ -69,7 +69,7 @@ Task({
 					\sustain, ~sustain,
 					\atk, 0.25,
 					\rel, 1,
-					\pan, Pfunc({2.0.rand - 1.0 })
+					\pan, Pfunc({1.0.rand - 0.5 })
 				)
 			).play(~tempoClock);
 
@@ -90,7 +90,7 @@ Task({
 			).play(~tempoClock);
 			Pdef(\saw_3,
 				Pbind(\instrument, \sawSynth,
-					\amp, Pfunc({0.03125.rand + 0.03125})/2.5*~ampLevel,
+					\amp, Pfunc({0.03125.rand + 0.08})/2.5*~ampLevel,
 					\midinote, 127,
 					\dur, 0.125,
 					\sustain, ~sustain/16,
@@ -214,7 +214,7 @@ Task({
 
 			Pdef(\saw_3,
 				Pbind(\instrument, \sawSynth,
-					\amp, Pfunc({0.03125.rand + 0.03125}),
+					\amp, Pfunc({0.03125.rand + 0.05}),
 					\midinote, 127,
 					\dur, 0.125,
 					\sustain, ~sustain/16,
@@ -269,7 +269,7 @@ Task({
 		if(measureSelectNum == 108 && countNum == 0, {
 			Pdef(\saw_3,
 				Pbind(\instrument, \sawSynth,
-					\amp, Pfunc({0.03125.rand + 0.03125})*~ampLevel,
+					\amp, Pfunc({0.03125.rand + 0.05})*~ampLevel,
 					\midinote, 127,
 					\dur, 0.125,
 					\sustain, ~sustain/16,

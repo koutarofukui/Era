@@ -48,6 +48,7 @@ Task({
 					\freq, 440 * 24,
 					\rel, 1/32,
 					\sampleRate,0.999,
+					\pan, Pn(Penv([-1, 2], [4])),
 					\amp, 1,
 					\dur, 1/16,
 				)
@@ -107,6 +108,7 @@ Task({
 					\freq, 440 * 32,
 					\atk, Pn(Penv([1/128, 1/64], [4])),
 					\rel, Pn(Penv([0, 1/64], [4])),
+					\pan, Pn(Penv([1, -1], [4])),
 					\sampleRate, 0.75,
 					\bitRate, 4,
 					\amp, 0.75,
@@ -142,7 +144,7 @@ Task({
 					\atk, 0,
 					//\rel, Pn(Penv([1/16, 1/64], [4])),
 					\rel, 0,
-					\amp, 0.25,
+					\amp, 0.125,
 					\dur, Pseq([Pn(1/16, 8),Pn(1/32, 48)],1)
 
 				)
