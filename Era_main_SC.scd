@@ -8,7 +8,7 @@
 (~currentDocPath++"Era_Setting.scd").load;
 )
 
-Server.internal.options.device =  "Soundflower (2ch)";
+Server.local.options.device =  "Soundflower (2ch)";
 //Server.internal.options.device =  "Built-in Output";
 
 (
@@ -38,6 +38,8 @@ set_6 = set_4+set_5;// set_6 = set_1 + set_2 + set_3
 ~sourceOsc.free;
 ~stutterOsc.free;
 
+~henonFx.free;
+
 ~reverb = Synth.after(1, \reverb);
 ~reverb.set(\in, 33,\mix, 0.5, \room, 0.99, \dump, 0.5);
 
@@ -47,8 +49,9 @@ set_6 = set_4+set_5;// set_6 = set_1 + set_2 + set_3
 ~logisticFilterFx = Synth.after(1, \logisticMap_FX);
 ~logisticFilterFx.set(\in, 35, \chaos, 3.99, \logiFreq, 2000);
 
-~henonFx = Synth.after(1, \henonC_FX);
-~henonFx.set(\in, 37);
+//~henonFx = Synth.after(1, \henonC_FX);
+//~henonFx.set(\in, 37);
+
 
 totalMeasureSelectNum = 0;
 
@@ -112,17 +115,35 @@ Task({
 			(~currentDocPath++"3rd_section.scd").load;
 		});
 
+		/*if(totalMeasureSelectNum == 253 && totalCountNum == 0,{
+			~third_section_Task.stop;
+			(~currentDocPath++"4th_section.scd").load;
+
+		});
+
+		if(totalMeasureSelectNum == 255 && totalCountNum == 0,{
+			m.sendMsg("/event/particle_rotateMode", 1);
+
+			Pdef(\chord).stop;
+
+		});
+*/
 		if(totalMeasureSelectNum == 253 && totalCountNum == 0,{
+			~third_section_Task.stop;
+
+
+		});
+
+		if(totalMeasureSelectNum == 255 && totalCountNum == 0,{
 
 			(~currentDocPath++"4th_section.scd").load;
 
 		});
 
-		if(totalMeasureSelectNum == 254 && totalCountNum == 0,{
+		if(totalMeasureSelectNum == 255 && totalCountNum == 0,{
 			m.sendMsg("/event/particle_rotateMode", 1);
 
 			Pdef(\chord).stop;
-			~third_section_Task.stop;
 
 		});
 
